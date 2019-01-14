@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+<ui:insert name="head">
+<h:head>
+    <title>ВСТАВЬ СВОЙ ТИТЛ</title>
+</h:head>
+</ui:insert>
+
+<body>
+
+<p:commandButton value="Меню" oncomplete="PF('sidebar1').show()" />
+<ui:insert name="menu">
+    <h:form>
+        <p:sidebar widgetVar="sidebar1" baseZIndex="10000">
+            <h1 style="font-weight:normal">Меню</h1>
+            <p:commandButton value="Закрыть" oncomplete="PF('sidebar1').hide()"/>
+
+        <p:menu toggleable="true">
+            <p:menuitem value="Рабочий стол" url="dashboard.xhtml"/>
+            <p:submenu label="Мои данные">
+                <p:menuitem value="Мои репозитории" url="view-my-repositories.xhtml"/>
+                <p:menuitem value="Мои файлы" url="#" />
+            </p:submenu>
+
+            <p:submenu label="Социум" icon="pi pi-file">
+                <p:submenu label="Контроль качества">
+                    <p:menuitem value="Назначено на меня" url="#"/>
+                    <p:menuitem value="Назначено мной" url="#"/>
+                </p:submenu>
+                <p:submenu label="Мои друзья">
+                    <p:menuitem value="Онлайн" url="#"/>
+                    <p:menuitem value="Оффлайн" url="#"/>
+                </p:submenu>
+            </p:submenu>
+
+            <p:submenu label="Помощь" icon="pi pi-question">
+
+            </p:submenu>
+
+            <f:facet name="options">
+                <p:menuitem value="Выйти из системы" url="login.xhtml" icon="pi pi-times" />
+            </f:facet>
+        </p:menu>
+        </p:sidebar>
+    </h:form>
+</ui:insert>
+    <h:form id="mainform">
+    <ui:insert name="content"/>
+    </h:form>
+</body>
+</html>

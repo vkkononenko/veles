@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="templates/main-template.xhtml">
+
+    <ui:define name="head">
+        <h:head>
+            <title>Репозиторий: #{repositoryView.id}</title>
+        </h:head>
+    </ui:define>
+
+    <f:metadata>
+        <f:viewParam name="id" value="#{repositoryView.id}"/>
+        <f:viewAction action="#{repositoryView.onLoad()}"/>
+    </f:metadata>
+
+    <ui:define name="content">
+        <p:tabView id="tabview">
+            <p:tab title="Общая информация">
+                <h:panelGrid columns="2" cellpadding="10">
+                    <p:outputLabel for="name" value="Имя репозитория" />
+                    <p:inputText id="name" value="#{repositoryView.repository.name}"/>
+
+                    <p:outputLabel for="secret" value="Приватный репозиторий" />
+                    <p:selectBooleanCheckbox id="secret" value="#{repositoryView.repository.secret}"/>
+                </h:panelGrid>
+            </p:tab>
+
+            <p:tab id="versions" title="Версии">
+                <h:panelGrid columns="2" cellpadding="10">
+                    <p:dataTable var="rec" value="#{repositoryView.repository.versions}" rows="10" scrollable="true" scrollWidth="1920"
+                                 widgetVar="versionsDatatable"
+                                 resizableColumns="true" style="margin-bottom:20px"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15">
+
+                        <f:facet name="header">
+                            Версионирование
+                        </f:facet>
+
+                        <p:column headerText="Версия данных" resizable="true">
+                            <p:link value="#{rec.id}">
+                                <f:param name="id" value="#{rec.id}"/>
+                            </p:link>
+                        </p:column>
+
+                        <p:column headerText="Данные" resizable="true">
+                            <h:outputText value="#{rec.data}" />
+                        </p:column>
+                    </p:dataTable>
+                </h:panelGrid>
+            </p:tab>
+
+            <p:tab id="followers" title="Подписчики">
+                <h:panelGrid columns="2" cellpadding="10">
+                    <p:dataTable var="rec" value="#{repositoryView.repository.followers}" rows="10" scrollable="true" scrollWidth="1920"
+                                 widgetVar="usersDatatable"
+                                 resizableColumns="true" style="margin-bottom:20px"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15">
+
+                        <f:facet name="header">
+                            Подписчики
+                        </f:facet>
+
+                        <p:column headerText="Ид пользователя" resizable="true">
+                            <p:link value="#{rec.id}">
+                                <f:param name="id" value="#{rec.id}"/>
+                            </p:link>
+                        </p:column>
+
+                        <p:column headerText="Логин пользователя" resizable="true">
+                            <h:outputText value="#{rec.login}" />
+                        </p:column>
+
+                        <p:column headerText="Имя пользователя" resizable="true">
+                            <h:outputText value="#{rec.name}" />
+                        </p:column>
+
+                        <p:column headerText="Действия" resizable="true">
+                            <p:commandButton value="Удалить из подписчиков" ajax="true" action="#{repositoryView.removeSubscriber(rec)}" update="mainform:tabview:followers"/>
+                        </p:column>
+
+                    </p:dataTable>
+                </h:panelGrid>
+                <p:commandButton value="Добавить подписчиков изменения" ajax="true" type="button" onclick="PF('dlg1').show();"/>
+
+                <p:dialog header="Добавление подписчиков" widgetVar="dlg1" minHeight="40">
+                    <p:dataTable var="rec" value="#{repositoryView.systemUserList}" rows="10" scrollable="true" scrollWidth="1920"
+                                 widgetVar="usersDatatable"
+                                 resizableColumns="true" style="margin-bottom:20px"
+                                 paginator="true"
+                                 selection="#{repositoryView.selectedUsers}"
+                                 rowKey="#{rec.id}"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15">
+
+                        <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                        <p:column headerText="Ид пользователя" resizable="true">
+                            <p:link value="#{rec.id}">
+                                <f:param name="id" value="#{rec.id}"/>
+                            </p:link>
+                        </p:column>
+
+                        <p:column headerText="Логин пользователя" resizable="true">
+                            <h:outputText value="#{rec.login}" />
+                        </p:column>
+
+                        <p:column headerText="Имя пользователя" resizable="true">
+                            <h:outputText value="#{rec.name}" />
+                        </p:column>
+                        <f:facet name="footer">
+                            <p:commandButton value="Добавить подписчика изменения" ajax="true" action="#{repositoryView.addSubscribers()}" onclick="PF('dlg1').hide();" update="mainform:tabview:followers"/>
+                        </f:facet>
+                    </p:dataTable>
+                </p:dialog>
+            </p:tab>
+
+            <p:tab title="Контроль версий">
+                <h:panelGrid columns="2" cellpadding="10">
+                    <h:panelGrid columns="2" cellpadding="10">
+                        <p:dataTable var="rec" value="#{repositoryView.repository.versions}" rows="10" scrollable="true" scrollWidth="1920"
+                                     widgetVar="usersDatatable"
+                                     resizableColumns="true" style="margin-bottom:20px"
+                                     paginator="true"
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,15">
+
+                            <f:facet name="header">
+                                Контроль версий
+                            </f:facet>
+
+                            <p:column headerText="Ид версии" resizable="true">
+                                <p:link value="#{rec.id}">
+                                    <f:param name="id" value="#{rec.id}"/>
+                                </p:link>
+                            </p:column>
+
+                            <p:column headerText="Акцептовано" resizable="true">
+                                <h:outputText value="#{rec.isAccepted()}" />
+                            </p:column>
+
+                        </p:dataTable>
+                    </h:panelGrid>
+                </h:panelGrid>
+            </p:tab>
+        </p:tabView>
+        <p:commandButton ajax="true" value="Сохранить изменения" action="#{repositoryView.save()}"/>
+        <p:messages id="messages" showDetail="true" closable="true">
+            <p:autoUpdate />
+        </p:messages>
+    </ui:define>
+</ui:composition>
+</html>

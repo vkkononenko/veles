@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Вход в систему</title>
+</h:head>
+
+<body>
+<h:form>
+    <h:panelGrid columns="2" cellpadding="5">
+        <p:outputLabel for="login" value="Введите логин:" />
+        <p:inputText id="login" required="true" value="#{userSession.login}"/>
+
+        <p:outputLabel for="password" value="Введите пароль:" />
+        <p:password id="password" type="" required="true" value="#{userSession.password}"/>
+    </h:panelGrid>
+    <p:commandButton value="Войти в систему" ajax="true" action="#{userSession.logIntoSystem()}" style="margin-right:20px;" styleClass="ui-priority-primary" />
+    <p:messages id="messages" showDetail="true" closable="true">
+        <p:autoUpdate />
+    </p:messages>
+</h:form>
+</body>
+</html>

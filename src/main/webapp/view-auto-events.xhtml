@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Данные о событии мониторинга движения ТС</title>
+</h:head>
+
+<h:body>
+    <h:form>
+    <p:dataTable var="rec" value="#{autoEventsView.onLoad()}" rows="10" scrollable="true" scrollWidth="1920"
+                 widgetVar="datatable"
+                 resizableColumns="true" style="margin-bottom:20px"
+                 paginator="true"
+                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                 rowsPerPageTemplate="5,10,15">
+
+        <f:facet name="header">
+            Данные о событии мониторинга движения ТС
+        </f:facet>
+
+        <p:column headerText="Идентификатор события" resizable="true">
+            <h:outputText value="#{rec.id}" />
+        </p:column>
+
+        <p:column headerText="Дата создания" resizable="true">
+            <h:outputText value="#{rec.dateCreated}" />
+        </p:column>
+
+        <p:column headerText="Идентификатор типа события" resizable="true">
+            <h:outputText value="#{rec.eventTypeId}" />
+        </p:column>
+
+        <p:column headerText="Идентификатор контролируемого объекта" resizable="true">
+            <h:outputText value="#{rec.ctrlObjectId}" />
+        </p:column>
+
+        <p:column headerText="Дата/время фиксации события" resizable="true">
+            <h:outputText value="#{rec.eventTime}" />
+        </p:column>
+
+        <p:column headerText="Широта (система координат WGS-84)" resizable="true">
+            <h:outputText value="#{rec.eventPoint.lat}" />
+        </p:column>
+
+        <p:column headerText="Долгота (система координат WGS-84)" resizable="true">
+            <h:outputText value="#{rec.eventPoint.lon}" />
+        </p:column>
+
+        <p:column headerText="Скорость, км/ч" resizable="true">
+            <h:outputText value="#{rec.eventPoint.spd}" />
+        </p:column>
+
+        <p:column headerText="Направление движения, град." resizable="true">
+            <h:outputText value="#{rec.eventPoint.dir}" />
+        </p:column>
+    </p:dataTable>
+
+    <p:inputTextarea rows="25" cols="75" styleClass="JsonEditor" value="#{autoEventsView.text}" height="300" style="margin-bottom:10px" />
+    <br/>
+    <h:commandButton value="Отправить данные" action="#{autoEventsView.sendJson()}"
+                     ajax="true" immediate="false"/>
+    <h:commandButton value="Очистить" ajax="true" action="#{autoEventsView.clearJson()}" update="@(.JsonEditor)" icon="ui-icon-close" />
+    </h:form>
+</h:body>
+</html>
