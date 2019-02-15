@@ -56,6 +56,14 @@
                         </p:column>
                     </p:dataTable>
                 </h:panelGrid>
+                <p:commandButton value="Добавить версию" ajax="true" type="button" onclick="PF('dlg2').show();"/>
+
+                <p:dialog header="Добавление версии" widgetVar="dlg2" minHeight="40">
+                    <p:outputLabel for="newData"/>
+                    <p:inputText id="newData" value="#{repositoryView.version.data}"/>
+
+                    <p:commandButton value="Добавить версию" ajax="true" action="#{repositoryView.addVersion()}" onclick="PF('dlg2').hide();" update="mainform"/>
+                </p:dialog>
             </p:tab>
 
             <p:tab id="followers" title="Подписчики">
@@ -86,7 +94,7 @@
                         </p:column>
 
                         <p:column headerText="Действия" resizable="true">
-                            <p:commandButton value="Удалить из подписчиков" ajax="true" action="#{repositoryView.removeSubscriber(rec)}" update="mainform:tabview:followers"/>
+                            <p:commandButton value="Удалить из подписчиков" action="#{repositoryView.removeSubscriber(rec)}" update="mainform"/>
                         </p:column>
 
                     </p:dataTable>
@@ -118,16 +126,16 @@
                             <h:outputText value="#{rec.name}" />
                         </p:column>
                         <f:facet name="footer">
-                            <p:commandButton value="Добавить подписчика изменения" ajax="true" action="#{repositoryView.addSubscribers()}" onclick="PF('dlg1').hide();" update="mainform:tabview:followers"/>
+                            <p:commandButton value="Добавить подписчика изменения" ajax="true" action="#{repositoryView.addSubscribers()}" onclick="PF('dlg1').hide();" update="mainform"/>
                         </f:facet>
                     </p:dataTable>
                 </p:dialog>
             </p:tab>
 
-            <p:tab title="Контроль версий">
+            <p:tab title="Контроль качества репозитория">
                 <h:panelGrid columns="2" cellpadding="10">
                     <h:panelGrid columns="2" cellpadding="10">
-                        <p:dataTable var="rec" value="#{repositoryView.repository.versions}" rows="10" scrollable="true" scrollWidth="1920"
+                        <p:dataTable var="rec" value="#{repositoryView.repository.grades}" rows="10" scrollable="true" scrollWidth="1920"
                                      widgetVar="usersDatatable"
                                      resizableColumns="true" style="margin-bottom:20px"
                                      paginator="true"
@@ -138,14 +146,20 @@
                                 Контроль версий
                             </f:facet>
 
-                            <p:column headerText="Ид версии" resizable="true">
+                            <p:column headerText="Логин проверяющего" resizable="true">
                                 <p:link value="#{rec.id}">
-                                    <f:param name="id" value="#{rec.id}"/>
+                                    <f:param name="id" value="#{rec.systemUser.login}"/>
+                                </p:link>
+                            </p:column>
+
+                            <p:column headerText="Имя проверяющего" resizable="true">
+                                <p:link value="#{rec.id}">
+                                    <f:param name="id" value="#{rec.systemUser.name}"/>
                                 </p:link>
                             </p:column>
 
                             <p:column headerText="Акцептовано" resizable="true">
-                                <h:outputText value="#{rec.isAccepted()}" />
+                                <h:outputText value="#{rec.accepted}" />
                             </p:column>
 
                         </p:dataTable>

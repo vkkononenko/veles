@@ -1,8 +1,10 @@
 package vkkononenko.beans;
 
 import vkkononenko.UserSession;
+import vkkononenko.models.Grade;
 import vkkononenko.models.Repository;
 import vkkononenko.models.SystemUser;
+import vkkononenko.models.Version;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -14,6 +16,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,6 +32,11 @@ public class RepositoryView implements Serializable {
     private Repository repository;
 
     @Inject
+    private Version version;
+
+    private List<Grade> grades;
+
+    @Inject
     private UserSession userSession;
 
     private List<SystemUser> systemUserList;
@@ -39,6 +47,7 @@ public class RepositoryView implements Serializable {
     private EntityManager em;
 
     public void onLoad() {
+        grades = new ArrayList<>();
         Query q = em.createQuery("select s from SystemUser s where s.id <> :myId");
         q.setParameter("myId", userSession.getSystemUser().getId());
         systemUserList = q.getResultList();
@@ -51,6 +60,7 @@ public class RepositoryView implements Serializable {
     public void save() {
         try {
             if(id == null) {
+                repository.setMakeBy(userSession.getSystemUser());
                 em.persist(repository);
                 em.flush();
                 userSession.getSystemUser().getRepositories().add(repository);
@@ -69,12 +79,30 @@ public class RepositoryView implements Serializable {
     @Transactional
     public void removeSubscriber(SystemUser systemUser) {
         repository.getFollowers().remove(systemUser);
+        repository.getGrades().remove(repository.getGradeByUser(systemUser));
+        em.merge(repository);
     }
 
     @Transactional
     public void addSubscribers() {
         repository.getFollowers().addAll(selectedUsers);
+        for(SystemUser systemUser:selectedUsers) {
+            Grade grade = new Grade(systemUser);
+            em.persist(grade);
+            grades.add(grade);
+        }
+        repository.getGrades().addAll(grades);
+        em.merge(repository);
     }
+
+    @Transactional
+    public void addVersion() {
+        em.persist(version);
+        repository.getVersions().add(version);
+        em.merge(repository);
+    }
+
+
 
     public Long getId() {
         return id;
@@ -90,6 +118,22 @@ public class RepositoryView implements Serializable {
 
     public void setRepository(Repository repository) {
         this.repository = repository;
+    }
+
+    public Version getVersion() {
+        return version;
+    }
+
+    public void setVersion(Version version) {
+        this.version = version;
+    }
+
+    public UserSession getUserSession() {
+        return userSession;
+    }
+
+    public void setUserSession(UserSession userSession) {
+        this.userSession = userSession;
     }
 
     public List<SystemUser> getSystemUserList() {

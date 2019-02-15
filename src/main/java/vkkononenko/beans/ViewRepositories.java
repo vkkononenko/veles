@@ -27,12 +27,8 @@ public class ViewRepositories implements Serializable {
 
     private List<Repository> repositoryList;
 
-    @PersistenceContext(name = "veles")
-    private EntityManager em;
-
     @Transactional
     public void onLoad() {
-        em.refresh(userSession.getSystemUser());
         repositoryList = userSession.getSystemUser().getRepositories();
     }
 

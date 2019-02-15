@@ -47,6 +47,11 @@
             <p:column headerText="Приватный репозиторий" resizable="true">
                 <h:selectBooleanCheckbox value="#{rec.secret}" />
             </p:column>
+
+            <p:column headerText="Акцептован" resizable="true">
+                <h:selectBooleanCheckbox value="#{rec.accepted}" disabled="true"/>
+            </p:column>
+
             <f:facet name="footer">
                 <p:commandButton id="savebutton" ajax="true" value="Создать новый репозиторий" actionListener="#{viewRepositories.redirectToCreateNewEntity()}" />
             </f:facet>

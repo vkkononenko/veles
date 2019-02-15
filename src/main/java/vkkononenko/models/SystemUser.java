@@ -26,7 +26,7 @@ public class SystemUser extends EntityBase {
     private List<Repository> repositories;
 
     @OneToMany(fetch = FetchType.EAGER)
-    private List<Version> needGrade;
+    private List<Grade> needGrade;
 
     public String getLogin() {
         return login;
@@ -76,11 +76,11 @@ public class SystemUser extends EntityBase {
         this.repositories = repositories;
     }
 
-    public List<Version> getNeedGrade() {
+    public List<Grade> getNeedGrade() {
         return needGrade;
     }
 
-    public void setNeedGrade(List<Version> needGrade) {
+    public void setNeedGrade(List<Grade> needGrade) {
         this.needGrade = needGrade;
     }
 }

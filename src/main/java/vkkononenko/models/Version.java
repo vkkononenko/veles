@@ -3,6 +3,7 @@ package vkkononenko.models;
 import vkkononenko.models.bases.EntityBase;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -14,16 +15,8 @@ public class Version extends EntityBase {
     @Column(columnDefinition = "text")
     private String data;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    private List<Grade> grades;
+    public Version() {
 
-    public boolean isAccepted() {
-        for(Grade grade : grades) {
-            if(!grade.isAccepted()) {
-                return false;
-            }
-        }
-        return true;
     }
 
     public long getVersion() {
@@ -41,13 +34,4 @@ public class Version extends EntityBase {
     public void setData(String data) {
         this.data = data;
     }
-
-    public List<Grade> getGrade() {
-        return grades;
-    }
-
-    public void setGrade(List<Grade> grade) {
-        this.grades = grade;
-    }
-
 }

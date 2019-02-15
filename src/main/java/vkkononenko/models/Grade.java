@@ -13,9 +13,16 @@ public class Grade extends EntityBase {
 
     private SystemUser systemUser;
 
-    private boolean accepted;
+    private boolean accepted = false;
 
     private String comment;
+
+    public Grade() {}
+
+    public Grade(SystemUser systemUser) {
+        this.systemUser = systemUser;
+        accepted = false;
+    }
 
     public SystemUser getSystemUser() {
         return systemUser;
