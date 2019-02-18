@@ -68,7 +68,7 @@ public class RepositoryView implements Serializable {
         try {
             if(id == null) {
                 repository.setMakeBy(userSession.getSystemUser());
-                em.merge(repository);
+                em.persist(repository);
                 em.flush();
                 userSession.getSystemUser().getRepositories().add(repository);
                 userSession.setSystemUser(em.merge(userSession.getSystemUser()));
@@ -124,6 +124,10 @@ public class RepositoryView implements Serializable {
                 em.merge(userSession.getSystemUser());
             }
         }
+    }
+
+    public void setVersionForMap(Version version) {
+        this.version = version;
     }
 
     public Long getId() {

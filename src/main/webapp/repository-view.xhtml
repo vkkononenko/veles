@@ -56,7 +56,7 @@
                         </p:column>
 
                         <p:column headerText="Действия" resizable="true">
-                            <p:commandButton value="Просмотр данных на карте" update="mainform"/>
+                            <p:commandButton value="Просмотр данных на карте" action="#{repositoryView.setVersionForMap(rec)}" oncomplete="PF('dlg3').show();"/>
                             <br/>
                             <p:commandButton value="Акцептовать" action="#{repositoryView.accept()}" rendered="#{!repositoryView.Updatable()}" update="mainform"/>
                         </p:column>
@@ -70,6 +70,31 @@
                     <p:inputText id="newData" value="#{repositoryView.version.data}"/>
 
                     <p:commandButton value="Добавить версию" ajax="true" action="#{repositoryView.addVersion()}" onclick="PF('dlg2').hide();" rendered="#{repositoryView.Updatable()}" update="mainform"/>
+                </p:dialog>
+
+                <p:dialog header="Просмотр карты" widgetVar="dlg3" minHeight="40">
+                <p:tabView>
+                    <p:tab title="Яндекс">
+                        <div id="map" style="width: 1024px; height: 768px">
+                            <script src="https://api-maps.yandex.ru/2.1-dev/?apikey=74c882a5-c372-4385-bc86-bb09895d7669&amp;lang=ru_RU" type="text/javascript"></script>
+                            <script type="text/javascript">
+                                var myMap;
+                                ymaps.ready(init); // Ожидание загрузки API с сервера Яндекса
+                                function init () {
+                                    myMap = new ymaps.Map("map", {
+                                        center: [55.76, 37.64], // Координаты центра карты
+                                        zoom: 10 // Zoom
+                                    });
+                                }
+                            </script>
+                        </div>
+                    </p:tab>
+                    <p:tab title="Гугл">
+                        <div>
+
+                        </div>
+                    </p:tab>
+                </p:tabView>
                 </p:dialog>
             </p:tab>
 
