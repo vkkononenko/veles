@@ -8,6 +8,7 @@ import org.primefaces.model.DashboardModel;
 import org.primefaces.model.DefaultDashboardColumn;
 import org.primefaces.model.DefaultDashboardModel;
 import vkkononenko.UserSession;
+import vkkononenko.models.Grade;
 import vkkononenko.models.Repository;
 
 import javax.annotation.PostConstruct;
@@ -90,8 +91,10 @@ public class HomeView implements Serializable {
             return 0;
         }
         for(Repository repository : userSession.getSystemUser().getNeedGrade()) {
-            if(repository.getGrades() == null) {
-                count++;
+            for(Grade grade : repository.getGrades()) {
+                if(grade.getSystemUser().getId().equals(userSession.getSystemUser().getId()) && !grade.isAccepted()) {
+                    count++;
+                }
             }
         }
         return count;
