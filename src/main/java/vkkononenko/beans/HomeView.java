@@ -7,11 +7,14 @@ import org.primefaces.model.DashboardColumn;
 import org.primefaces.model.DashboardModel;
 import org.primefaces.model.DefaultDashboardColumn;
 import org.primefaces.model.DefaultDashboardModel;
+import vkkononenko.UserSession;
+import vkkononenko.models.Repository;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 
@@ -19,22 +22,20 @@ import java.io.Serializable;
 @ViewScoped
 public class HomeView implements Serializable {
 
+    @Inject
+    private UserSession userSession;
+
     private DashboardModel model;
 
-    @PostConstruct
-    public void init() {
+    public void onLoad() {
         model = new DefaultDashboardModel();
         DashboardColumn column1 = new DefaultDashboardColumn();
         DashboardColumn column2 = new DefaultDashboardColumn();
         DashboardColumn column3 = new DefaultDashboardColumn();
 
-        column1.addWidget("sports");
-        column1.addWidget("finance");
-
-        column2.addWidget("lifestyle");
-        column2.addWidget("weather");
-
-        column3.addWidget("politics");
+        column1.addWidget("repositories");
+        column2.addWidget("friends");
+        column3.addWidget("needGrade");
 
         model.addColumn(column1);
         model.addColumn(column2);
@@ -49,6 +50,53 @@ public class HomeView implements Serializable {
 
         addMessage(message);
     }
+
+    public long getCountMyRepositories() {
+        if(userSession.getSystemUser().getRepositories() == null) {
+            return 0;
+        }
+        return userSession.getSystemUser().getRepositories().size();
+    }
+
+    public long getCountMyNeedUpdateRepositories() {
+        Long count = 0L;
+        if(userSession.getSystemUser().getRepositories() == null) {
+            return 0;
+        }
+        for(Repository repository : userSession.getSystemUser().getRepositories()) {
+            if(!repository.isAccepted()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public long getCountMyNeedGradeRepositories() {
+        Long count = 0L;
+        if(userSession.getSystemUser().getRepositories() == null) {
+            return 0;
+        }
+        for(Repository repository : userSession.getSystemUser().getRepositories()) {
+            if(repository.getGrades() == null) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public long getCountMeNeedGradeRepositories() {
+        Long count = 0L;
+        if(userSession.getSystemUser().getNeedGrade() == null) {
+            return 0;
+        }
+        for(Repository repository : userSession.getSystemUser().getNeedGrade()) {
+            if(repository.getGrades() == null) {
+                count++;
+            }
+        }
+        return count;
+    }
+
 
     public void handleClose(CloseEvent event) {
         FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Panel Closed", "Closed panel id:'" + event.getComponent().getId() + "'");

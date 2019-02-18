@@ -56,12 +56,19 @@ public class RepositoryView implements Serializable {
         }
     }
 
+    public boolean Updatable() {
+        if(repository.getMakeBy() == null) {
+            repository.setMakeBy(userSession.getSystemUser());
+        }
+        return repository.getMakeBy().getId().equals(userSession.getSystemUser().getId());
+    }
+
     @Transactional
     public void save() {
         try {
             if(id == null) {
                 repository.setMakeBy(userSession.getSystemUser());
-                em.persist(repository);
+                em.merge(repository);
                 em.flush();
                 userSession.getSystemUser().getRepositories().add(repository);
                 userSession.setSystemUser(em.merge(userSession.getSystemUser()));
@@ -81,6 +88,7 @@ public class RepositoryView implements Serializable {
         repository.getFollowers().remove(systemUser);
         repository.getGrades().remove(repository.getGradeByUser(systemUser));
         em.merge(repository);
+        em.remove(repository.getGradeByUser(systemUser));
     }
 
     @Transactional
@@ -93,6 +101,10 @@ public class RepositoryView implements Serializable {
         }
         repository.getGrades().addAll(grades);
         em.merge(repository);
+        for(SystemUser systemUser:selectedUsers) {
+            systemUser.getNeedGrade().add(repository);
+            em.merge(systemUser);
+        }
     }
 
     @Transactional
@@ -102,7 +114,17 @@ public class RepositoryView implements Serializable {
         em.merge(repository);
     }
 
-
+    @Transactional
+    public void accept() {
+        for(Grade grade : repository.getGrades()) {
+            if(grade.getSystemUser().getId().equals(userSession.getSystemUser().getId())) {
+                grade.setAccepted(true);
+                em.merge(grade);
+                userSession.getSystemUser().getNeedGrade().remove(repository);
+                em.merge(userSession.getSystemUser());
+            }
+        }
+    }
 
     public Long getId() {
         return id;

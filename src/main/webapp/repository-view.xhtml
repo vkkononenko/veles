@@ -25,10 +25,10 @@
             <p:tab title="Общая информация">
                 <h:panelGrid columns="2" cellpadding="10">
                     <p:outputLabel for="name" value="Имя репозитория" />
-                    <p:inputText id="name" value="#{repositoryView.repository.name}"/>
+                    <p:inputText id="name" value="#{repositoryView.repository.name}" disabled="#{!repositoryView.Updatable()}"/>
 
                     <p:outputLabel for="secret" value="Приватный репозиторий" />
-                    <p:selectBooleanCheckbox id="secret" value="#{repositoryView.repository.secret}"/>
+                    <p:selectBooleanCheckbox id="secret" value="#{repositoryView.repository.secret}" disabled="#{!repositoryView.Updatable()}"/>
                 </h:panelGrid>
             </p:tab>
 
@@ -54,6 +54,13 @@
                         <p:column headerText="Данные" resizable="true">
                             <h:outputText value="#{rec.data}" />
                         </p:column>
+
+                        <p:column headerText="Действия" resizable="true">
+                            <p:commandButton value="Просмотр данных на карте" update="mainform"/>
+                            <br/>
+                            <p:commandButton value="Акцептовать" action="#{repositoryView.accept()}" rendered="#{!repositoryView.Updatable()}" update="mainform"/>
+                        </p:column>
+
                     </p:dataTable>
                 </h:panelGrid>
                 <p:commandButton value="Добавить версию" ajax="true" type="button" onclick="PF('dlg2').show();"/>
@@ -62,7 +69,7 @@
                     <p:outputLabel for="newData"/>
                     <p:inputText id="newData" value="#{repositoryView.version.data}"/>
 
-                    <p:commandButton value="Добавить версию" ajax="true" action="#{repositoryView.addVersion()}" onclick="PF('dlg2').hide();" update="mainform"/>
+                    <p:commandButton value="Добавить версию" ajax="true" action="#{repositoryView.addVersion()}" onclick="PF('dlg2').hide();" rendered="#{repositoryView.Updatable()}" update="mainform"/>
                 </p:dialog>
             </p:tab>
 
@@ -93,13 +100,13 @@
                             <h:outputText value="#{rec.name}" />
                         </p:column>
 
-                        <p:column headerText="Действия" resizable="true">
+                        <p:column headerText="Действия" resizable="true" rendered="#{repositoryView.Updatable()}">
                             <p:commandButton value="Удалить из подписчиков" action="#{repositoryView.removeSubscriber(rec)}" update="mainform"/>
                         </p:column>
 
                     </p:dataTable>
                 </h:panelGrid>
-                <p:commandButton value="Добавить подписчиков изменения" ajax="true" type="button" onclick="PF('dlg1').show();"/>
+                <p:commandButton value="Добавить подписчиков изменения" ajax="true" type="button" onclick="PF('dlg1').show();" rendered="#{repositoryView.Updatable()}"/>
 
                 <p:dialog header="Добавление подписчиков" widgetVar="dlg1" minHeight="40">
                     <p:dataTable var="rec" value="#{repositoryView.systemUserList}" rows="10" scrollable="true" scrollWidth="1920"
@@ -126,7 +133,7 @@
                             <h:outputText value="#{rec.name}" />
                         </p:column>
                         <f:facet name="footer">
-                            <p:commandButton value="Добавить подписчика изменения" ajax="true" action="#{repositoryView.addSubscribers()}" onclick="PF('dlg1').hide();" update="mainform"/>
+                            <p:commandButton value="Добавить подписчика изменения" ajax="true" action="#{repositoryView.addSubscribers()}" rendered="#{repositoryView.Updatable()}" onclick="PF('dlg1').hide();" update="mainform"/>
                         </f:facet>
                     </p:dataTable>
                 </p:dialog>
@@ -167,7 +174,7 @@
                 </h:panelGrid>
             </p:tab>
         </p:tabView>
-        <p:commandButton ajax="true" value="Сохранить изменения" action="#{repositoryView.save()}"/>
+        <p:commandButton ajax="true" value="Сохранить изменения" action="#{repositoryView.save()}" rendered="#{repositoryView.Updatable()}"/>
         <p:messages id="messages" showDetail="true" closable="true">
             <p:autoUpdate />
         </p:messages>

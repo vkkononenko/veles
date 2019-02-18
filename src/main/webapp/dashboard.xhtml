@@ -15,6 +15,10 @@
         </h:head>
     </ui:define>
 
+    <f:metadata>
+        <f:viewAction action="#{homeView.onLoad()}"/>
+    </f:metadata>
+
     <ui:define name="content">
         <p align="center" style="color:#ff0099; font-size:30px">Добро пожаловать в систему "Велес" - первая система контроля версий для геоданных</p>
         <p:growl id="msgs" showDetail="true" />
@@ -22,25 +26,24 @@
         <p:dashboard id="board" model="#{homeView.model}">
             <p:ajax event="reorder" listener="#{homeView.handleReorder}" update="msgs" />
 
-            <p:panel id="sports" header="Sports">
-                <h:outputText value="Sports Content" />
+            <p:panel id="repositories" header="Репозитории">
+                <p:outputLabel id="AllRepositories" value="Всего моих репозиториев: #{homeView.getCountMyRepositories()}" />
+                <br/>
+                <p:outputLabel id="NeedGradeRepositories" value="Нуждается в оценке: #{homeView.getCountMyNeedUpdateRepositories()}" />
+                <br/>
+                <p:outputLabel id="NeedUpdateRepositories" value="Отклонено репозиториев: #{homeView.getCountMyNeedGradeRepositories()}" />
             </p:panel>
 
-            <p:panel id="finance" header="Finance">
-                <h:outputText value="Finance Content" />
+            <p:panel id="friends" header="Друзья">
+                <p:outputLabel id="AllFriens" value="Всего моих друзей: " />
+                <br/>
+                <p:outputLabel id="OnlineFriens" value="Друзья онлайн: " />
             </p:panel>
 
-            <p:panel id="lifestyle" header="Lifestyle">
-                <h:outputText value="Lifestyle Content"  />
+            <p:panel id="needGrade" header="Необходима проверка">
+                <h:outputText value="Необходима оценка: #{homeView.getCountMeNeedGradeRepositories()}"/>
             </p:panel>
 
-            <p:panel id="weather" header="Weather">
-                <h:outputText value="Weather Content" />
-            </p:panel>
-
-            <p:panel id="politics" header="Politics">
-                <h:outputText value="Politics Content" />
-            </p:panel>
         </p:dashboard>
     </ui:define>
 </ui:composition>

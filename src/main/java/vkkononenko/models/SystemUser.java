@@ -1,10 +1,8 @@
 package vkkononenko.models;
 
 import vkkononenko.models.bases.EntityBase;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
+
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -25,8 +23,12 @@ public class SystemUser extends EntityBase {
     @OneToMany(fetch = FetchType.EAGER)
     private List<Repository> repositories;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    private List<Grade> needGrade;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "needGrade",
+            joinColumns = @JoinColumn(name = "system_user_id"),
+            inverseJoinColumns = @JoinColumn(name = "repository_id")
+    )
+    private List<Repository> needGrade;
 
     public String getLogin() {
         return login;
@@ -76,11 +78,11 @@ public class SystemUser extends EntityBase {
         this.repositories = repositories;
     }
 
-    public List<Grade> getNeedGrade() {
+    public List<Repository> getNeedGrade() {
         return needGrade;
     }
 
-    public void setNeedGrade(List<Grade> needGrade) {
+    public void setNeedGrade(List<Repository> needGrade) {
         this.needGrade = needGrade;
     }
 }

@@ -17,12 +17,12 @@
 
     <f:view>
         <f:metadata>
-            <f:viewAction action="#{viewRepositories.onLoad()}"/>
+            <f:viewAction action="#{viewNeedGradeRepositories.onLoad()}"/>
         </f:metadata>
     </f:view>
 
     <ui:define name="content">
-        <p:dataTable var="rec" value="#{viewRepositories.repositoryList}" rows="10" scrollable="true" scrollWidth="1920"
+        <p:dataTable var="rec" value="#{viewNeedGradeRepositories.repositoryList}" rows="10" scrollable="true" scrollWidth="1920"
                      widgetVar="datatable"
                      resizableColumns="true" style="margin-bottom:20px"
                      paginator="true"
@@ -36,7 +36,7 @@
 
             <p:column headerText="Ид репозитория" resizable="true">
                 <p:link value="#{rec.id}" outcome="repository-view.xhtml">
-                <f:param name="id" value="#{rec.id}"/>
+                    <f:param name="id" value="#{rec.id}"/>
                 </p:link>
             </p:column>
 
@@ -51,10 +51,6 @@
             <p:column headerText="Акцептован" resizable="true">
                 <h:selectBooleanCheckbox value="#{rec.accepted}" disabled="true"/>
             </p:column>
-
-            <f:facet name="footer">
-                <p:commandButton id="savebutton" ajax="true" value="Создать новый репозиторий" actionListener="#{viewRepositories.redirectToCreateNewEntity()}" />
-            </f:facet>
         </p:dataTable>
     </ui:define>
 </ui:composition>
