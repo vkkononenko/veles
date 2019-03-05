@@ -23,7 +23,7 @@
     <ui:define name="content">
                 <p:graphicImage rendered="#{!empty(profileView.systemUser.avatar)}" value="#{profileView.imageFromDB}" height="267" width="200"/>
                 <p:fileUpload fileUploadListener="#{profileView.handleFileUpload}" mode="advanced" dragDropSupport="false"
-                              sizeLimit="100000" fileLimit="3" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" disabled="#{!profileView.itsMe}"/>
+                              sizeLimit="100000" fileLimit="3" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" rendered="#{profileView.itsMe}"/>
                 <h:panelGrid columns="2" cellpadding="5">
                     <p:outputLabel for="login" value="Логин:" />
                     <p:inputText id="login" required="true" value="#{profileView.systemUser.login}" disabled="#{!profileView.itsMe}"/>
@@ -35,10 +35,19 @@
                     <p:inputText id="orgName" value="#{profileView.systemUser.orgName}" disabled="#{!profileView.itsMe}"/>
 
                     <p:commandButton value="Сохранить изменения" ajax="true" action="#{profileView.saveChanges()}" style="margin-right:20px;" rendered="#{profileView.itsMe}"/>
-
-                    <p:commandButton value="Отправить сообщения" ajax="true" action="#{profileView.saveChanges()}" style="margin-right:20px;" rendered="#{!profileView.itsMe}"/>
-                    <p:commandButton value="Репозитории пользователя: #{profileView.systemUser.repositoriesCount}" ajax="true" action="#{profileView.saveChanges()}" style="margin-right:20px;" rendered="#{!profileView.itsMe}"/>
                 </h:panelGrid>
+
+                 <p:commandButton value="Отправить сообщение" type="button" onclick="PF('message').show();" />
+                 <br/>
+                 <p:commandButton value="Репозитории пользователя" ajax="true" action="#{profileView.redirectToRepositories()}" style="margin-right:20px;" rendered="#{!profileView.itsMe}"/>
+                 <br/>
+                 <p:commandButton value="Добавить в отслеживаемые" ajax="true" action="#{profileView.addToFriends()}" style="margin-right:20px;" rendered="#{!profileView.itsMe}"/>
+
+                <p:dialog header="Сообщение для #{profileView.systemUser.name}" widgetVar="message" modal="true">
+                    <p:textEditor widgetVar="editor1" value="#{profileView.text}" height="300" style="margin-bottom:10px"/>
+                    <p:commandButton value="Отправить" action="#{profileView.sendMessageTo}" oncomplete="PF('message').hide()"/>
+                    <p:commandButton value="Очистить" type="button" onclick="PF('editor1').clear();" icon="pi pi-times"/>
+                </p:dialog>
         <p:messages id="messages" showDetail="true" closable="true">
             <p:autoUpdate />
         </p:messages>

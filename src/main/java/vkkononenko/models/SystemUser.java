@@ -20,7 +20,11 @@ public class SystemUser extends EntityBase {
 
     private String avatarType;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "friends",
+            joinColumns = @JoinColumn(name = "first_friend"),
+            inverseJoinColumns = @JoinColumn(name = "second_friend")
+    )
     private List<SystemUser> friends;
 
     @OneToMany(fetch = FetchType.EAGER)

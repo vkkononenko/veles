@@ -3,6 +3,7 @@ package vkkononenko.beans;
 import org.hibernate.Hibernate;
 import vkkononenko.UserSession;
 import vkkononenko.models.Repository;
+import vkkononenko.models.SystemUser;
 
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
@@ -22,18 +23,39 @@ import java.util.List;
 @ViewScoped
 public class ViewRepositories implements Serializable {
 
+    @PersistenceContext(name = "veles")
+    private EntityManager em;
+
+    private Long id;
+
     @Inject
     private UserSession userSession;
+
+    @Inject
+    private SystemUser systemUser;
 
     private List<Repository> repositoryList;
 
     @Transactional
     public void onLoad() {
-        repositoryList = userSession.getSystemUser().getRepositories();
+        if(id == null) {
+            repositoryList = userSession.getSystemUser().getRepositories();
+        } else {
+            systemUser = em.find(SystemUser.class, id);
+            repositoryList = systemUser.getRepositories();
+        }
     }
 
     public void redirectToCreateNewEntity() throws IOException {
         FacesContext.getCurrentInstance().getExternalContext().redirect("repository-view.xhtml");
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public UserSession getUserSession() {
@@ -51,5 +73,4 @@ public class ViewRepositories implements Serializable {
     public void setRepositoryList(List<Repository> repositoryList) {
         this.repositoryList = repositoryList;
     }
-
 }

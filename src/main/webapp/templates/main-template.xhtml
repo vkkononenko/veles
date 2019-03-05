@@ -25,7 +25,7 @@
             <p:menuitem value="Рабочий стол" url="dashboard.xhtml"/>
             <p:menuitem value="Мой профиль" url="profile-view.xhtml"/>
             <p:submenu label="Мои данные">
-                <p:menuitem value="Мои репозитории" url="view-my-repositories.xhtml"/>
+                <p:menuitem value="Мои репозитории" url="view-repositories.xhtml"/>
                 <p:menuitem value="Мои сообщения" url="my-messages.xhtml"/>
             </p:submenu>
 
@@ -37,7 +37,10 @@
                 <p:menuitem value="Назначено на меня" url="view-need-grade-by-me-repositories.xhtml"/>
             </p:submenu>
 
-            <p:menuitem label="Помощь" icon="pi pi-question"/>
+            <p:submenu label="Поиск и помощь">
+                <p:menuitem value="Поиск людей, организаций, репозиториев" url="my-friends.xhtml"/>
+                <p:menuitem value="Помощь по системе" url="my-friends.xhtml"/>
+            </p:submenu>
 
             <f:facet name="options">
                 <p:menuitem value="Выйти из системы" url="login.xhtml" icon="pi pi-times" />

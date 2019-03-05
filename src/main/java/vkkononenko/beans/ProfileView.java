@@ -1,27 +1,23 @@
 package vkkononenko.beans;
 
-import org.apache.commons.io.IOUtils;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import vkkononenko.UserSession;
+import vkkononenko.models.Message;
 import vkkononenko.models.SystemUser;
-
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
-import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.io.*;
-import java.sql.SQLException;
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * Created by v.kononenko on 05.03.2019.
@@ -42,6 +38,8 @@ public class ProfileView implements Serializable {
     private Long id;
 
     private boolean itsMe;
+
+    private String text;
 
     @Transactional
     public void onLoad() {
@@ -64,10 +62,8 @@ public class ProfileView implements Serializable {
         RequestContext.getCurrentInstance().update("mainform");
     }
 
-    @Transactional
-    public void saveChanges() {
-        em.merge(systemUser);
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Сообщение!", "Профиль успешно обновлен!"));
+    public void redirectToRepositories() throws IOException {
+        FacesContext.getCurrentInstance().getExternalContext().redirect("view-repositories.xhtml?id=" + Objects.toString(systemUser.getId()));
     }
 
     public StreamedContent getImageFromDB() throws IOException {
@@ -80,6 +76,33 @@ public class ProfileView implements Serializable {
             return new DefaultStreamedContent(new ByteArrayInputStream(systemUser.getAvatar()),
                     systemUser.getAvatarType());
         }
+    }
+
+    @Transactional
+    public void saveChanges() {
+        em.merge(systemUser);
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Сообщение!", "Профиль успешно обновлен!"));
+    }
+
+    @Transactional
+    public void addToFriends() {
+        userSession.getSystemUser().getFriends().add(systemUser);
+        em.merge(userSession.getSystemUser());
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Сообщение!", "Вы отслеживаете данного пользователя!"));
+    }
+
+    @Transactional
+    public void sendMessageTo() {
+        Message message = new Message(userSession.getSystemUser(), systemUser, text);
+        em.persist(message);
+    }
+
+    public UserSession getUserSession() {
+        return userSession;
+    }
+
+    public void setUserSession(UserSession userSession) {
+        this.userSession = userSession;
     }
 
     public SystemUser getSystemUser() {
@@ -104,5 +127,13 @@ public class ProfileView implements Serializable {
 
     public void setItsMe(boolean itsMe) {
         this.itsMe = itsMe;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 }

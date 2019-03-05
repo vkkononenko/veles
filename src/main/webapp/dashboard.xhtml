@@ -27,17 +27,15 @@
             <p:ajax event="reorder" listener="#{homeView.handleReorder}" update="msgs" />
 
             <p:panel id="repositories" header="Репозитории">
-                <p:outputLabel id="AllRepositories" value="Всего моих репозиториев: #{homeView.getCountMyRepositories()}" />
+                <p:link value="Всего моих репозиториев: #{homeView.getCountMyRepositories()}" outcome="view-repositories.xhtml"/>
                 <br/>
-                <p:outputLabel id="NeedGradeRepositories" value="Нуждается в оценке: #{homeView.getCountMyNeedUpdateRepositories()}" />
+                <p:link value="Нуждается в оценке: #{homeView.getCountMyNeedGradeRepositories()}" outcome="view-need-grade-by-me-repositories.xhtml"/>
                 <br/>
-                <p:outputLabel id="NeedUpdateRepositories" value="Отклонено репозиториев: #{homeView.getCountMyNeedGradeRepositories()}" />
+                <h:outputText value="Отклонено репозиториев: #{homeView.getCountMyNeedUpdateRepositories()}"/>
             </p:panel>
 
-            <p:panel id="friends" header="Друзья">
-                <p:outputLabel id="AllFriens" value="Всего моих друзей: " />
-                <br/>
-                <p:outputLabel id="OnlineFriens" value="Друзья онлайн: " />
+            <p:panel id="friends" header="Сообщения">
+                <p:link value="Непрочитанных сообщений: #{homeView.getCountUnreadMessages()}" outcome="my-messages.xhtml"/>
             </p:panel>
 
             <p:panel id="needGrade" header="Необходима проверка">

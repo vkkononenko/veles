@@ -17,11 +17,17 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.io.Serializable;
 
 @Named
 @ViewScoped
 public class HomeView implements Serializable {
+
+    @PersistenceContext(name="veles")
+    private EntityManager em;
 
     @Inject
     private UserSession userSession;
@@ -98,6 +104,12 @@ public class HomeView implements Serializable {
             }
         }
         return count;
+    }
+
+    public Integer getCountUnreadMessages() {
+        Query count = em.createQuery("select count(*) from Message message where message.to.id = :id");
+        count.setParameter("id", userSession.getSystemUser().getId());
+        return count.getResultList().size() - 1;
     }
 
 
