@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="templates/main-template.xhtml">
+
+    <ui:define name="head">
+        <h:head>
+            <title>Пользователь: #{profileView.id}</title>
+        </h:head>
+    </ui:define>
+
+    <f:metadata>
+        <f:viewParam name="id" value="#{profileView.id}"/>
+        <f:viewAction action="#{profileView.onLoad()}"/>
+    </f:metadata>
+
+    <ui:define name="content">
+            <h:panelGrid columns="2" cellpadding="10" id="profileinfo">
+                <p:graphicImage rendered="#{!empty(profileView.systemUser.avatarPath)}" name="#{profileView.systemUser.avatarPath}" />
+                <p:fileUpload fileUploadListener="#{profileView.handleFileUpload}" mode="advanced" dragDropSupport="true"
+                              update="mainform:profileinfo" sizeLimit="100000" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
+
+                <p:column colspan="2" style="margin-left: 10px">
+                <p:outputLabel/>
+                    <p:outputLabel for="name"  value="Имя пользователя"/>
+                    <p:inputText id="name" label="Имя:" value="#{profileView.systemUser.name}" disabled="#{!profileView.itsMe}"/>
+
+                    <p:outputLabel for="login"  value="Логин"/>
+                    <p:inputText id="login" label="Имя:" value="#{profileView.systemUser.login}" disabled="#{!profileView.itsMe}"/>
+
+                    <p:outputLabel for="orgName"  value="Организация"/>
+                    <p:inputText id="orgName" label="Имя:" value="#{profileView.systemUser.orgName}" disabled="#{!profileView.itsMe}"/>
+
+                    <p:outputLabel for="password"  value="Пароль" rendered="#{!profileView.itsMe}"/>
+                    <p:inputText id="password" label="Имя:" value="#{profileView.systemUser.password}" rendered="#{!profileView.itsMe}"/>
+                </p:column>
+            </h:panelGrid>
+    </ui:define>
+</ui:composition>
+</html>

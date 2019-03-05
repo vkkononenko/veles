@@ -46,9 +46,7 @@
                         </f:facet>
 
                         <p:column headerText="Версия данных" resizable="true">
-                            <p:link value="#{rec.id}">
-                                <f:param name="id" value="#{rec.id}"/>
-                            </p:link>
+                            <h:outputText value="#{rec.id}" />
                         </p:column>
 
                         <p:column headerText="Данные" resizable="true">
@@ -56,7 +54,7 @@
                         </p:column>
 
                         <p:column headerText="Действия" resizable="true">
-                            <p:commandButton value="Просмотр данных на карте" action="#{repositoryView.setVersionForMap(rec)}" oncomplete="PF('dlg3').show();"/>
+                            <p:commandButton value="Просмотр данных на карте" onclick="#{repositoryView.setVersionForMap(rec)}" oncomplete="PF('dlg3').show();" update="mainform:tabview:j_idt30:0:j_idt38"/>
                             <br/>
                             <p:commandButton value="Акцептовать" action="#{repositoryView.accept()}" rendered="#{!repositoryView.Updatable()}" update="mainform"/>
                         </p:column>
@@ -67,31 +65,46 @@
 
                 <p:dialog header="Добавление версии" widgetVar="dlg2" minHeight="40">
                     <p:outputLabel for="newData"/>
-                    <p:inputText id="newData" value="#{repositoryView.version.data}"/>
-
+                    <p:inputText id="newData" value="#{repositoryView.data}"/>
                     <p:commandButton value="Добавить версию" ajax="true" action="#{repositoryView.addVersion()}" onclick="PF('dlg2').hide();" rendered="#{repositoryView.Updatable()}" update="mainform"/>
                 </p:dialog>
 
-                <p:dialog header="Просмотр карты" widgetVar="dlg3" minHeight="40">
+                <p:dialog id="showmap" header="Просмотр карты" widgetVar="dlg3" minHeight="40">
                 <p:tabView>
                     <p:tab title="Яндекс">
-                        <div id="map" style="width: 1024px; height: 768px">
-                            <script src="https://api-maps.yandex.ru/2.1-dev/?apikey=74c882a5-c372-4385-bc86-bb09895d7669&amp;lang=ru_RU" type="text/javascript"></script>
+                        <div id="yandexMap" style="width: 1024px; height: 768px">
+                            <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&amp;apikey=74c882a5-c372-4385-bc86-bb09895d7669"></script>
                             <script type="text/javascript">
-                                var myMap;
-                                ymaps.ready(init); // Ожидание загрузки API с сервера Яндекса
-                                function init () {
-                                    myMap = new ymaps.Map("map", {
-                                        center: [55.76, 37.64], // Координаты центра карты
-                                        zoom: 10 // Zoom
-                                    });
-                                }
+                                ymaps.ready(function () {
+
+                                    var map = new ymaps.Map('yandexMap', {
+                                                center: [55.79, 37.64],
+                                                zoom: 10,
+                                                controls: ['zoomControl']
+                                            }),
+                                            objectManager = new ymaps.ObjectManager();
+                                    $.getJSON("http://localhost:8080/veles/rest/getGeoJson?id=#{repositoryView.getVersionId()}").done(function (geoJson) {
+                                                // Добавляем описание объектов в формате JSON в менеджер объектов.
+                                                objectManager.add(geoJson);
+                                                // Добавляем объекты на карту.
+                                                map.geoObjects.add(objectManager);
+                                            })});
                             </script>
                         </div>
                     </p:tab>
                     <p:tab title="Гугл">
-                        <div>
-
+                        <div id="googleMap" style="width: 1024px; height: 768px">
+                            <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD436Ywwqs0WqNmOkL0Yesx-AU7PG56Qjs&amp;callback=initMap"></script>
+                            <script type="text/javascript">
+                                var map;
+                                function initMap() {
+                                    map = new google.maps.Map(document.getElementById('googleMap'), {
+                                        zoom: 4,
+                                        center: {lat: -28, lng: 137}
+                                    });
+                                    map.data.loadGeoJson('http://localhost:8080/veles/rest/getGeoJson?id=#{repositoryView.getVersionId()}');
+                                }
+                            </script>
                         </div>
                     </p:tab>
                 </p:tabView>

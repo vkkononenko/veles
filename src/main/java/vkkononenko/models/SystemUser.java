@@ -17,6 +17,8 @@ public class SystemUser extends EntityBase {
 
     private String orgName;
 
+    private String avatarPath;
+
     @OneToMany(fetch = FetchType.EAGER)
     private List<SystemUser> friends;
 
@@ -60,6 +62,14 @@ public class SystemUser extends EntityBase {
 
     public void setOrgName(String orgName) {
         this.orgName = orgName;
+    }
+
+    public String getAvatarPath() {
+        return avatarPath;
+    }
+
+    public void setAvatarPath(String avatarPath) {
+        this.avatarPath = avatarPath;
     }
 
     public List<SystemUser> getFriends() {

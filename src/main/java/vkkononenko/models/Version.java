@@ -10,7 +10,7 @@ import java.util.List;
 public class Version extends EntityBase {
 
     @javax.persistence.Version
-    public long version;
+    public long version = 0;
 
     @Column(columnDefinition = "text")
     private String data;

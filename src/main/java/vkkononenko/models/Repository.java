@@ -31,6 +31,9 @@ public class Repository extends EntityBase {
     @OneToMany(fetch = FetchType.EAGER)
     private List<Grade> grades;
 
+    private boolean accepted;
+
+    /*
     public boolean isAccepted() {
         if(grades == null) {
             return true;
@@ -42,6 +45,7 @@ public class Repository extends EntityBase {
         }
         return true;
     }
+    */
 
     public Repository() {
         followers = new ArrayList<>();
@@ -105,4 +109,13 @@ public class Repository extends EntityBase {
     public void setGrades(List<Grade> grades) {
         this.grades = grades;
     }
+
+    public boolean isAccepted() {
+        return accepted;
+    }
+
+    public void setAccepted(boolean accepted) {
+        this.accepted = accepted;
+    }
+
 }

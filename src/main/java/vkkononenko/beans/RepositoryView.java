@@ -15,9 +15,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by v.kononenko on 14.01.2019.
@@ -45,6 +49,8 @@ public class RepositoryView implements Serializable {
 
     @PersistenceContext(name = "veles")
     private EntityManager em;
+
+    private String data;
 
     public void onLoad() {
         grades = new ArrayList<>();
@@ -86,9 +92,7 @@ public class RepositoryView implements Serializable {
     @Transactional
     public void removeSubscriber(SystemUser systemUser) {
         repository.getFollowers().remove(systemUser);
-        repository.getGrades().remove(repository.getGradeByUser(systemUser));
         em.merge(repository);
-        em.remove(repository.getGradeByUser(systemUser));
     }
 
     @Transactional
@@ -99,7 +103,6 @@ public class RepositoryView implements Serializable {
             em.persist(grade);
             grades.add(grade);
         }
-        repository.getGrades().addAll(grades);
         em.merge(repository);
         for(SystemUser systemUser:selectedUsers) {
             systemUser.getNeedGrade().add(repository);
@@ -109,9 +112,16 @@ public class RepositoryView implements Serializable {
 
     @Transactional
     public void addVersion() {
+        Version version = new Version();
+        version.setData(data);
         em.persist(version);
         repository.getVersions().add(version);
+        repository.setAccepted(false);
         em.merge(repository);
+        for(SystemUser systemUser:repository.getFollowers()) {
+            systemUser.getNeedGrade().add(repository);
+            em.merge(systemUser);
+        }
     }
 
     @Transactional
@@ -124,10 +134,21 @@ public class RepositoryView implements Serializable {
                 em.merge(userSession.getSystemUser());
             }
         }
+        for(Grade grade : repository.getGrades()) {
+            if(!grade.isAccepted()) {
+                break;
+            }
+            repository.setAccepted(true);
+            em.merge(repository);
+        }
     }
 
-    public void setVersionForMap(Version version) {
+    public void setVersionForMap(Version version) throws IOException {
         this.version = version;
+    }
+
+    public Long getVersionId() throws IOException {
+        return version.getId();
     }
 
     public Long getId() {
@@ -176,5 +197,13 @@ public class RepositoryView implements Serializable {
 
     public void setSelectedUsers(List<SystemUser> selectedUsers) {
         this.selectedUsers = selectedUsers;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
     }
 }
