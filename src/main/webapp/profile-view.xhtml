@@ -21,26 +21,27 @@
     </f:metadata>
 
     <ui:define name="content">
-            <h:panelGrid columns="2" cellpadding="10" id="profileinfo">
-                <p:graphicImage rendered="#{!empty(profileView.systemUser.avatarPath)}" name="#{profileView.systemUser.avatarPath}" />
-                <p:fileUpload fileUploadListener="#{profileView.handleFileUpload}" mode="advanced" dragDropSupport="true"
-                              update="mainform:profileinfo" sizeLimit="100000" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
+                <p:graphicImage rendered="#{!empty(profileView.systemUser.avatar)}" value="#{profileView.imageFromDB}" height="267" width="200"/>
+                <p:fileUpload fileUploadListener="#{profileView.handleFileUpload}" mode="advanced" dragDropSupport="false"
+                              sizeLimit="100000" fileLimit="3" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" disabled="#{!profileView.itsMe}"/>
+                <h:panelGrid columns="2" cellpadding="5">
+                    <p:outputLabel for="login" value="Логин:" />
+                    <p:inputText id="login" required="true" value="#{profileView.systemUser.login}" disabled="#{!profileView.itsMe}"/>
+        
+                    <p:outputLabel for="name" value="Имя:" />
+                    <p:inputText id="name" value="#{profileView.systemUser.name}" disabled="#{!profileView.itsMe}"/>
+        
+                    <p:outputLabel for="orgName" value="Организация:" />
+                    <p:inputText id="orgName" value="#{profileView.systemUser.orgName}" disabled="#{!profileView.itsMe}"/>
 
-                <p:column colspan="2" style="margin-left: 10px">
-                <p:outputLabel/>
-                    <p:outputLabel for="name"  value="Имя пользователя"/>
-                    <p:inputText id="name" label="Имя:" value="#{profileView.systemUser.name}" disabled="#{!profileView.itsMe}"/>
+                    <p:commandButton value="Сохранить изменения" ajax="true" action="#{profileView.saveChanges()}" style="margin-right:20px;" rendered="#{profileView.itsMe}"/>
 
-                    <p:outputLabel for="login"  value="Логин"/>
-                    <p:inputText id="login" label="Имя:" value="#{profileView.systemUser.login}" disabled="#{!profileView.itsMe}"/>
-
-                    <p:outputLabel for="orgName"  value="Организация"/>
-                    <p:inputText id="orgName" label="Имя:" value="#{profileView.systemUser.orgName}" disabled="#{!profileView.itsMe}"/>
-
-                    <p:outputLabel for="password"  value="Пароль" rendered="#{!profileView.itsMe}"/>
-                    <p:inputText id="password" label="Имя:" value="#{profileView.systemUser.password}" rendered="#{!profileView.itsMe}"/>
-                </p:column>
-            </h:panelGrid>
+                    <p:commandButton value="Отправить сообщения" ajax="true" action="#{profileView.saveChanges()}" style="margin-right:20px;" rendered="#{!profileView.itsMe}"/>
+                    <p:commandButton value="Репозитории пользователя: #{profileView.systemUser.repositoriesCount}" ajax="true" action="#{profileView.saveChanges()}" style="margin-right:20px;" rendered="#{!profileView.itsMe}"/>
+                </h:panelGrid>
+        <p:messages id="messages" showDetail="true" closable="true">
+            <p:autoUpdate />
+        </p:messages>
     </ui:define>
 </ui:composition>
 </html>

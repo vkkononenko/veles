@@ -3,6 +3,7 @@ package vkkononenko.models;
 import vkkononenko.models.bases.EntityBase;
 
 import javax.persistence.*;
+import java.sql.Blob;
 import java.util.List;
 
 @Entity
@@ -17,7 +18,7 @@ public class SystemUser extends EntityBase {
 
     private String orgName;
 
-    private String avatarPath;
+    private String avatarType;
 
     @OneToMany(fetch = FetchType.EAGER)
     private List<SystemUser> friends;
@@ -31,6 +32,13 @@ public class SystemUser extends EntityBase {
             inverseJoinColumns = @JoinColumn(name = "repository_id")
     )
     private List<Repository> needGrade;
+
+    @Column(name="avatar", columnDefinition="bytea")
+    private byte[] avatar;
+
+    public Integer getRepositoriesCount() {
+        return repositories != null ?  repositories.size() : 0;
+    }
 
     public String getLogin() {
         return login;
@@ -64,12 +72,12 @@ public class SystemUser extends EntityBase {
         this.orgName = orgName;
     }
 
-    public String getAvatarPath() {
-        return avatarPath;
+    public String getAvatarType() {
+        return avatarType;
     }
 
-    public void setAvatarPath(String avatarPath) {
-        this.avatarPath = avatarPath;
+    public void setAvatarType(String avatarType) {
+        this.avatarType = avatarType;
     }
 
     public List<SystemUser> getFriends() {
@@ -94,5 +102,13 @@ public class SystemUser extends EntityBase {
 
     public void setNeedGrade(List<Repository> needGrade) {
         this.needGrade = needGrade;
+    }
+
+    public byte[] getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(byte[] avatar) {
+        this.avatar = avatar;
     }
 }
