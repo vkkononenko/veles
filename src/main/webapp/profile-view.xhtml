@@ -11,7 +11,7 @@
 
     <ui:define name="head">
         <h:head>
-            <title>Пользователь: #{profileView.id}</title>
+            <title>Пользователь: #{profileView.systemUser.name}</title>
         </h:head>
     </ui:define>
 
@@ -21,9 +21,8 @@
     </f:metadata>
 
     <ui:define name="content">
-                <p:graphicImage rendered="#{!empty(profileView.systemUser.avatar)}" value="#{profileView.imageFromDB}" height="267" width="200"/>
-                <p:fileUpload fileUploadListener="#{profileView.handleFileUpload}" mode="advanced" dragDropSupport="false"
-                              sizeLimit="100000" fileLimit="3" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" rendered="#{profileView.itsMe}"/>
+        <p:tabView id="tabview">
+            <p:tab title="Общая информация">
                 <h:panelGrid columns="2" cellpadding="5">
                     <p:outputLabel for="login" value="Логин:" />
                     <p:inputText id="login" required="true" value="#{profileView.systemUser.login}" disabled="#{!profileView.itsMe}"/>
@@ -36,17 +35,64 @@
 
                     <p:commandButton value="Сохранить изменения" ajax="true" action="#{profileView.saveChanges()}" style="margin-right:20px;" rendered="#{profileView.itsMe}"/>
                 </h:panelGrid>
+            </p:tab>
+            <p:tab title="Мои важные пользователи" rendered="#{profileView.itsMe}">
+                <h:panelGrid columns="2" cellpadding="5">
+                    <h:panelGrid columns="2" cellpadding="10">
+                        <p:dataTable var="rec" value="#{profileView.systemUser.friends}" rows="10" scrollable="true" scrollWidth="1920"
+                                     widgetVar="friendsDatatable"
+                                     resizableColumns="true" style="margin-bottom:20px"
+                                     paginator="true"
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,15">
 
-                 <p:commandButton value="Отправить сообщение" type="button" onclick="PF('message').show();" />
+                            <f:facet name="header">
+                                Пользователи
+                            </f:facet>
+
+                            <p:column headerText="Логин" resizable="true">
+                                <h:outputText value="#{rec.login}" />
+                            </p:column>
+
+                            <p:column headerText="Имя" resizable="true">
+                                <h:outputText value="#{rec.name}" />
+                            </p:column>
+
+                            <p:column headerText="Организация" resizable="true">
+                                <h:outputText value="#{rec.orgName}" />
+                            </p:column>
+
+                            <p:column headerText="Действия" resizable="true">
+                                <p:commandButton value="Репозитории пользователя" ajax="true" action="#{profileView.redirectToRepositories(rec)}" style="margin-right:20px;"/>
+                                <br/>
+                                <p:commandButton value="Отправить сообщение" type="button" onclick="PF('message1').show();"/>
+                                <br/>
+                                <p:commandButton value="Удалить из отслеживаемых пользователей" ajax="true" action="#{profileView.deleteFromFriends(rec)}" style="margin-right:20px;" update=":mainform:tabview"/>
+
+
+                                <p:dialog header="Сообщение для #{profileView.systemUser.name}" widgetVar="message1" modal="true">
+                                    <p:textEditor widgetVar="editor1" value="#{profileView.text}" height="300" style="margin-bottom:10px"/>
+                                    <p:commandButton value="Отправить" action="#{profileView.sendMessageTo(rec)}" oncomplete="PF('message1').hide()"/>
+                                    <p:commandButton value="Очистить" type="button" onclick="PF('editor1').clear();" icon="pi pi-times"/>
+                                </p:dialog>
+                            </p:column>
+
+                        </p:dataTable>
+                    </h:panelGrid>
+                </h:panelGrid>
+            </p:tab>
+        </p:tabView>
+
+                 <p:commandButton value="Отправить сообщение" type="button" onclick="PF('message').show();" rendered="#{!profileView.itsMe}"/>
                  <br/>
-                 <p:commandButton value="Репозитории пользователя" ajax="true" action="#{profileView.redirectToRepositories()}" style="margin-right:20px;" rendered="#{!profileView.itsMe}"/>
+                 <p:commandButton value="Репозитории пользователя" ajax="true" action="#{profileView.redirectToRepositories(null)}" style="margin-right:20px;" rendered="#{!profileView.itsMe}"/>
                  <br/>
                  <p:commandButton value="Добавить в отслеживаемые" ajax="true" action="#{profileView.addToFriends()}" style="margin-right:20px;" rendered="#{!profileView.itsMe}"/>
 
-                <p:dialog header="Сообщение для #{profileView.systemUser.name}" widgetVar="message" modal="true">
-                    <p:textEditor widgetVar="editor1" value="#{profileView.text}" height="300" style="margin-bottom:10px"/>
-                    <p:commandButton value="Отправить" action="#{profileView.sendMessageTo}" oncomplete="PF('message').hide()"/>
-                    <p:commandButton value="Очистить" type="button" onclick="PF('editor1').clear();" icon="pi pi-times"/>
+                <p:dialog header="Сообщение для #{profileView.systemUser.name}" widgetVar="message" modal="true" rendered="#{!profileView.itsMe}">
+                    <p:textEditor widgetVar="editor2" value="#{profileView.text}" height="300" style="margin-bottom:10px"/>
+                    <p:commandButton value="Отправить" action="#{profileView.sendMessageTo(null)}" oncomplete="PF('message').hide()"/>
+                    <p:commandButton value="Очистить" type="button" onclick="PF('editor2').clear();" icon="pi pi-times"/>
                 </p:dialog>
         <p:messages id="messages" showDetail="true" closable="true">
             <p:autoUpdate />

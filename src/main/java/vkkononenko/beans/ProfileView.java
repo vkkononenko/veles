@@ -11,6 +11,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
@@ -23,7 +24,7 @@ import java.util.Objects;
  * Created by v.kononenko on 05.03.2019.
  */
 @Named
-@SessionScoped
+@ViewScoped
 public class ProfileView implements Serializable {
 
     @PersistenceContext(name = "veles")
@@ -52,30 +53,18 @@ public class ProfileView implements Serializable {
         }
     }
 
-    @Transactional
-    public void handleFileUpload(FileUploadEvent event) throws Exception {
-        if(event.getFile() != null) {
-            systemUser.setAvatar(event.getFile().getContents());
-            systemUser.setAvatarType(event.getFile().getContentType());
-            em.merge(systemUser);
-        }
-        RequestContext.getCurrentInstance().update("mainform");
-    }
-
-    public void redirectToRepositories() throws IOException {
-        FacesContext.getCurrentInstance().getExternalContext().redirect("view-repositories.xhtml?id=" + Objects.toString(systemUser.getId()));
-    }
-
-    public StreamedContent getImageFromDB() throws IOException {
-        FacesContext context = FacesContext.getCurrentInstance();
-        if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
-            return new DefaultStreamedContent();
+    public void redirectToRepositories(SystemUser systemUser) throws IOException {
+        if(systemUser == null) {
+            FacesContext.getCurrentInstance().getExternalContext().redirect("view-repositories.xhtml?id=" + Objects.toString(this.systemUser.getId()));
         } else {
-
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            return new DefaultStreamedContent(new ByteArrayInputStream(systemUser.getAvatar()),
-                    systemUser.getAvatarType());
+            FacesContext.getCurrentInstance().getExternalContext().redirect("view-repositories.xhtml?id=" + Objects.toString(systemUser.getId()));
         }
+    }
+
+    @Transactional
+    public void deleteFromFriends(SystemUser systemUser) {
+        this.systemUser.getFriends().remove(systemUser);
+        em.merge(this.systemUser);
     }
 
     @Transactional
@@ -92,9 +81,15 @@ public class ProfileView implements Serializable {
     }
 
     @Transactional
-    public void sendMessageTo() {
-        Message message = new Message(userSession.getSystemUser(), systemUser, text);
+    public void sendMessageTo(SystemUser systemUser) {
+        Message message;
+        if(systemUser == null) {
+            message = new Message(userSession.getSystemUser(), this.systemUser, text);
+        } else {
+            message = new Message(userSession.getSystemUser(), systemUser, text);
+        }
         em.persist(message);
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Сообщение!", ""));
     }
 
     public UserSession getUserSession() {

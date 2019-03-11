@@ -37,13 +37,6 @@ public class SystemUser extends EntityBase {
     )
     private List<Repository> needGrade;
 
-    @Column(name="avatar", columnDefinition="bytea")
-    private byte[] avatar;
-
-    public Integer getRepositoriesCount() {
-        return repositories != null ?  repositories.size() : 0;
-    }
-
     public String getLogin() {
         return login;
     }
@@ -106,13 +99,5 @@ public class SystemUser extends EntityBase {
 
     public void setNeedGrade(List<Repository> needGrade) {
         this.needGrade = needGrade;
-    }
-
-    public byte[] getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(byte[] avatar) {
-        this.avatar = avatar;
     }
 }

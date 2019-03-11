@@ -2,10 +2,107 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
-<f:view>
-    <h:outputLabel value="Hello, world"/>
-</f:view>
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="templates/main-template.xhtml">
+
+    <ui:define name="head">
+        <h:head>
+            <title>Мои сообщения</title>
+        </h:head>
+    </ui:define>
+
+    <f:metadata>
+        <f:viewAction action="#{viewMyMessages.onLoad()}"/>
+    </f:metadata>
+
+    <ui:define name="content">
+        <p:tabView id="tabview">
+            <p:tab title="Входящие">
+                <p:dataTable var="rec" value="#{viewMyMessages.inputMessages}" rows="10" scrollable="true" scrollWidth="1920"
+                             rowKey="#{rec.id}"
+                             widgetVar="inputDatatable"
+                             selectionMode="single"
+                             selection="#{viewMyMessages.selected}"
+                             resizableColumns="true" style="margin-bottom:20px"
+                             paginator="true"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15">
+
+                    <p:ajax event="rowDblselect" listener="#{viewMyMessages.onRowSelect}" update=":mainform:tabview"  oncomplete="PF('message1').show()"/>
+
+                    <p:dialog header="Сообщение от #{viewMyMessages.selected.from.name}" widgetVar="message1" modal="true">
+                        <p:textEditor widgetVar="editor1" value="#{viewMyMessages.selected.text}" height="300" style="margin-bottom:10px"/>
+                        <p:textEditor widgetVar="editor2" value="#{viewMyMessages.text}" height="300" style="margin-bottom:10px"/>
+                        <p:commandButton value="Ответить" action="#{viewMyMessages.sendMessageTo(rec)}" oncomplete="PF('message1').hide()"/>
+                        <p:commandButton value="Очистить" type="button" onclick="PF('editor2').clear();" icon="pi pi-times"/>
+                    </p:dialog>
+
+                    <f:facet name="header">
+                        Входящие сообщения
+                    </f:facet>
+
+                    <p:column headerText="От" resizable="true">
+                        <h:outputText value="#{rec.from.name}" />
+                    </p:column>
+
+                    <p:column headerText="Текст" resizable="true">
+                        <p:textEditor widgetVar="editor2" value="#{rec.text}" height="300" style="margin-bottom:10px">
+                            <f:facet name="toolbar">
+                                <span class="ql-formats"/>
+                                 <span class="ql-formats"/>
+                            </f:facet>
+                        </p:textEditor>
+                    </p:column>
+
+                    <p:column headerText="Действия" resizable="true">
+                        <p:commandButton value="Ответить" type="button" onclick="PF('message1').show();"/>
+                        <br/>
+                        <p:commandButton value="Удалить сообщение" action="#{viewMyMessages.deleteMessage(rec, true)}" update=":mainform:tabview"/>
+
+                        <p:dialog header="Сообщение для #{rec.from.name}" widgetVar="message1" modal="true">
+                            <p:textEditor widgetVar="editor1" value="#{viewMyMessages.text}" height="300" style="margin-bottom:10px"/>
+                            <p:commandButton value="Отправить" action="#{viewMyMessages.sendMessageTo(rec)}" oncomplete="PF('message1').hide()"/>
+                            <p:commandButton value="Очистить" type="button" onclick="PF('editor1').clear();" icon="pi pi-times"/>
+                        </p:dialog>
+                    </p:column>
+                </p:dataTable>
+
+            </p:tab>
+            <p:tab title="Исходящие">
+                <p:dataTable var="rec" value="#{viewMyMessages.outputMessages}" rows="10" scrollable="true" scrollWidth="1920"
+                             widgetVar="outputDatatable"
+                             resizableColumns="true" style="margin-bottom:20px"
+                             paginator="true"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15">
+
+                    <f:facet name="header">
+                        Исходящие сообщения
+                    </f:facet>
+
+                    <p:column headerText="Кому" resizable="true">
+                        <h:outputText value="#{rec.to.name}" />
+                    </p:column>
+
+                    <p:column headerText="Текст" resizable="true">
+                        <p:textEditor widgetVar="editor2" value="#{rec.text}" height="300" style="margin-bottom:10px">
+                            <f:facet name="toolbar">
+                                <span class="ql-formats"/>
+                                <span class="ql-formats"/>
+                            </f:facet>
+                        </p:textEditor>
+                    </p:column>
+
+                    <p:column headerText="Действия" resizable="true">
+                        <p:commandButton value="Удалить сообщение" action="#{viewMyMessages.deleteMessage(rec, false)}" update=":mainform:tabview"/>
+                    </p:column>
+                </p:dataTable>
+            </p:tab>
+        </p:tabView>
+    </ui:define>
+</ui:composition>
 </html>
