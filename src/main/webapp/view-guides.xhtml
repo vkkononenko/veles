@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="templates/main-template.xhtml">
+
+    <ui:define name="head">
+        <h:head>
+            <title>Мои гайды</title>
+        </h:head>
+    </ui:define>
+
+    <f:view>
+        <f:metadata>
+            <f:viewParam name="id" value="#{viewGuides.id}"/>
+            <f:viewAction action="#{viewGuides.onLoad()}"/>
+        </f:metadata>
+    </f:view>
+
+    <ui:define name="content">
+        <p:dataTable var="rec" value="#{viewGuides.helpUnitList}" rows="10" scrollable="true" scrollWidth="1920"
+                     widgetVar="datatable"
+                     resizableColumns="true" style="margin-bottom:20px"
+                     paginator="true"
+                     rowKey="#{rec.id}"
+                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                     rowsPerPageTemplate="5,10,15">
+
+            <f:facet name="header">
+                Мои гайды
+            </f:facet>
+
+            <p:column headerText="Ид гайда" resizable="true">
+                <p:link value="#{rec.id}" outcome="guide-view.xhtml">
+                    <f:param name="id" value="#{rec.id}"/>
+                </p:link>
+            </p:column>
+
+            <p:column headerText="Название гайда" resizable="true">
+                <h:outputText value="#{rec.name}" />
+            </p:column>
+
+            <p:column headerText="Ключевые слова" resizable="true">
+                <h:selectBooleanCheckbox value="#{rec.keyWorlds}" disabled="true"/>
+            </p:column>
+
+            <f:facet name="footer">
+                <p:commandButton id="savebutton" ajax="true" value="Создать новый гайд" actionListener="#{viewGuides.redirectToCreateNewEntity()}" />
+            </f:facet>
+        </p:dataTable>
+    </ui:define>
+</ui:composition>
+</html>

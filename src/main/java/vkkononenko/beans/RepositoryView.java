@@ -70,7 +70,7 @@ public class RepositoryView implements Serializable {
     }
 
     @Transactional
-    public void save() {
+    public void save() throws IOException {
         try {
             if(id == null) {
                 repository.setMakeBy(userSession.getSystemUser());
@@ -86,7 +86,7 @@ public class RepositoryView implements Serializable {
         } catch (Exception ex) {
             return;
         }
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Сообщение", "Репозиторий успешно сохранен!"));
+        FacesContext.getCurrentInstance().getExternalContext().redirect("repository-view.xhtml?id=" + repository.getId());
     }
 
     @Transactional
