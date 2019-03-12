@@ -18,8 +18,6 @@ public class SystemUser extends EntityBase {
 
     private String orgName;
 
-    private String avatarType;
-
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "friends",
             joinColumns = @JoinColumn(name = "first_friend"),
@@ -67,14 +65,6 @@ public class SystemUser extends EntityBase {
 
     public void setOrgName(String orgName) {
         this.orgName = orgName;
-    }
-
-    public String getAvatarType() {
-        return avatarType;
-    }
-
-    public void setAvatarType(String avatarType) {
-        this.avatarType = avatarType;
     }
 
     public List<SystemUser> getFriends() {

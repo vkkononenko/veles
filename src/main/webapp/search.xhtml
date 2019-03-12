@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="templates/main-template.xhtml">
+
+    <ui:define name="head">
+        <h:head>
+            <title>Поиск</title>
+        </h:head>
+    </ui:define>
+
+    <f:view>
+        <f:metadata>
+            <f:viewAction action="#{searchView.onLoad()}"/>
+        </f:metadata>
+    </f:view>
+
+    <ui:define name="content">
+        <p:tabView id="tabview">
+            <p:tab id="userTab" title="Поиск пользователя">
+                <p:commandButton value="Критерии поиска" type="button" onclick="PF('userFilter').show()" update=":mainform:tabview:filteruserdialog"/>
+                <p:dialog id="filteruserdialog" header="Поиск" widgetVar="userFilter" minHeight="40" >
+                    <h:panelGrid id="paneluserfilter" columns="2" cellpadding="5">
+
+                        <h:outputText value="Логин: "/>
+                        <p:inputText value="#{searchView.systemUserFilter.login}"/>
+
+                        <h:outputText value="Имя: "/>
+                        <p:inputText value="#{searchView.systemUserFilter.name}"/>
+
+                        <h:outputText value="Организация: "/>
+                        <p:inputText value="#{searchView.systemUserFilter.orgName}"/>
+
+                        <p:commandButton value="Применить" action="#{searchView.searchUsers()}" update=":mainform:tabview" onclick="PF('filter').close()"/>
+                    </h:panelGrid>
+                </p:dialog>
+
+                <p:dataTable var="rec" value="#{searchView.systemUserList}" rows="10" scrollable="true" scrollWidth="1920"
+                     widgetVar="usersdatatable"
+                     resizableColumns="true" style="margin-bottom:20px"
+                     paginator="true"
+                     rowKey="#{rec.id}"
+                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                     rowsPerPageTemplate="5,10,15">
+
+                    <f:facet name="header">
+                        Поиск пользователя
+                    </f:facet>
+
+                    <p:column headerText="Логин" resizable="true">
+                        <p:link value="#{rec.login}" outcome="profile-view.xhtml">
+                            <f:param name="id" value="#{rec.id}"/>
+                        </p:link>
+                    </p:column>
+
+                    <p:column headerText="Имя" resizable="true">
+                        <h:outputText value="#{rec.name}" />
+                    </p:column>
+
+                    <p:column headerText="Организация" resizable="true">
+                        <h:outputText value="#{rec.orgName}" />
+                    </p:column>
+
+                    <p:column headerText="Организация" resizable="true">
+                        <h:outputText value="#{rec.orgName}" />
+                    </p:column>
+
+                </p:dataTable>
+            </p:tab>
+
+            <p:tab id="repositoriesTab" title="Поиск репозитория">
+                <p:commandButton value="Критерии поиска" type="button" onclick="PF('repositoriesFilter').show()" update=":mainform:tabview:panelrepositoryfilter"/>
+                <p:dialog id="repositoriesfilter" header="Поиск" widgetVar="repositoriesFilter" minHeight="40" >
+                    <h:panelGrid id="panelrepositoryfilter" columns="2" cellpadding="5">
+
+                        <h:outputText value="Ид репозитория: "/>
+                        <p:inputText value="#{searchView.repositoryFilter.id}"/>
+
+                        <h:outputText value="Название репозитория: "/>
+                        <p:inputText value="#{searchView.repositoryFilter.name}"/>
+
+                        <h:outputText value="Логин автора: "/>
+                        <p:inputText value="#{searchView.repositoryFilter.author}"/>
+
+                        <p:commandButton value="Применить" action="#{searchView.searchRepositories()}" update=":mainform:tabview" onclick="PF('filter').close()"/>
+                    </h:panelGrid>
+                </p:dialog>
+
+                <p:dataTable var="rec" value="#{searchView.repositoryList}" rows="10" scrollable="true" scrollWidth="1920"
+                             widgetVar="repositoriesdatatable"
+                             resizableColumns="true" style="margin-bottom:20px"
+                             paginator="true"
+                             rowKey="#{rec.id}"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15">
+
+                    <f:facet name="header">
+                        Поиск репозитория
+                    </f:facet>
+
+                    <p:column headerText="Ид репозитория" resizable="true">
+                        <p:link value="#{rec.id}" outcome="repository-view.xhtml">
+                            <f:param name="id" value="#{rec.id}"/>
+                        </p:link>
+                    </p:column>
+
+                    <p:column headerText="Логин автора  " resizable="true">
+                        <p:link value="#{rec.makeBy.login}" outcome="profile-view.xhtml">
+                            <f:param name="id" value="#{rec.makeBy.id}"/>
+                        </p:link>
+                    </p:column>
+
+                    <p:column headerText="Название репозитория" resizable="true">
+                        <h:outputText value="#{rec.name}" />
+                    </p:column>
+
+                    <p:column headerText="Акцептован" resizable="true">
+                        <h:selectBooleanCheckbox value="#{rec.accepted}" disabled="true"/>
+                    </p:column>
+
+                </p:dataTable>
+            </p:tab>
+        </p:tabView>
+    </ui:define>
+</ui:composition>
+</html>

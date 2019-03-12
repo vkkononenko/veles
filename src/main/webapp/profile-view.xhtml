@@ -67,7 +67,7 @@
                                 <br/>
                                 <p:commandButton value="Отправить сообщение" type="button" onclick="PF('message1').show();"/>
                                 <br/>
-                                <p:commandButton value="Удалить из отслеживаемых пользователей" ajax="true" action="#{profileView.deleteFromFriends(rec)}" style="margin-right:20px;" update=":mainform:tabview"/>
+                                <p:commandButton value="Удалить из отслеживаемых пользователей" ajax="true" action="#{profileView.deleteFromFriends(rec)}" rendered="#{profileView.isMyFriend(rec)}" style="margin-right:20px;" update=":mainform:tabview"/>
 
 
                                 <p:dialog header="Сообщение для #{profileView.systemUser.name}" widgetVar="message1" modal="true">
@@ -88,8 +88,11 @@
                  <p:commandButton value="Репозитории пользователя" ajax="true" action="#{profileView.redirectToRepositories(null)}" style="margin-right:20px;" rendered="#{!profileView.itsMe}"/>
                  <br/>
                  <p:commandButton value="Добавить в отслеживаемые" ajax="true" action="#{profileView.addToFriends()}" style="margin-right:20px;" rendered="#{!profileView.itsMe}"/>
+                 <br/>
+                 <p:commandButton value="Удалить из отслеживаемых пользователей" ajax="true" action="#{profileView.deleteFromFriends(null)}" style="margin-right:20px;" update=":mainform:tabview" rendered="#{!profileView.itsMe and profileView.isMyFriend(null)}"/>
 
-                <p:dialog header="Сообщение для #{profileView.systemUser.name}" widgetVar="message" modal="true" rendered="#{!profileView.itsMe}">
+
+        <p:dialog header="Сообщение для #{profileView.systemUser.name}" widgetVar="message" modal="true" rendered="#{!profileView.itsMe}">
                     <p:textEditor widgetVar="editor2" value="#{profileView.text}" height="300" style="margin-bottom:10px"/>
                     <p:commandButton value="Отправить" action="#{profileView.sendMessageTo(null)}" oncomplete="PF('message').hide()"/>
                     <p:commandButton value="Очистить" type="button" onclick="PF('editor2').clear();" icon="pi pi-times"/>

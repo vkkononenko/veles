@@ -40,6 +40,8 @@ public class ProfileView implements Serializable {
 
     private boolean itsMe;
 
+    private boolean isMyFriend;
+
     private String text;
 
     @Transactional
@@ -49,7 +51,11 @@ public class ProfileView implements Serializable {
             itsMe = true;
         } else {
             systemUser = em.find(SystemUser.class, id);
-            itsMe = false;
+            if(systemUser.getId() == userSession.getSystemUser().getId()) {
+                itsMe = true;
+            } else {
+                itsMe = false;
+            }
         }
     }
 
@@ -63,8 +69,12 @@ public class ProfileView implements Serializable {
 
     @Transactional
     public void deleteFromFriends(SystemUser systemUser) {
-        this.systemUser.getFriends().remove(systemUser);
-        em.merge(this.systemUser);
+        if(systemUser == null) {
+           userSession.getSystemUser().getFriends().remove(this.systemUser);
+        } else {
+            userSession.getSystemUser().getFriends().remove(systemUser);
+        }
+        em.merge(userSession.getSystemUser());
     }
 
     @Transactional
@@ -90,6 +100,19 @@ public class ProfileView implements Serializable {
         }
         em.persist(message);
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Сообщение!", ""));
+    }
+
+    public boolean isMyFriend(SystemUser systemUser) {
+        if(systemUser == null) {
+            userSession.getSystemUser().getFriends().remove(this.systemUser);
+            systemUser = this.systemUser;
+        }
+        for(SystemUser friend : userSession.getSystemUser().getFriends()) {
+            if(friend.getId().equals(systemUser.getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public UserSession getUserSession() {
