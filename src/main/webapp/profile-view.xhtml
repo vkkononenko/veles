@@ -24,6 +24,9 @@
         <p:tabView id="tabview">
             <p:tab title="Общая информация">
                 <h:panelGrid columns="2" cellpadding="5">
+                    <p:outputLabel for="status" value="Статус:" />
+                    <p:textEditor id="status" widgetVar="editor1" value="#{profileView.systemUser.status}" style="margin-bottom:10px; margin-top:10px; height: auto; width: auto"/>
+
                     <p:outputLabel for="login" value="Логин:" />
                     <p:inputText id="login" required="true" value="#{profileView.systemUser.login}" disabled="#{!profileView.itsMe}"/>
         
@@ -33,15 +36,15 @@
                     <p:outputLabel for="orgName" value="Организация:" />
                     <p:inputText id="orgName" value="#{profileView.systemUser.orgName}" disabled="#{!profileView.itsMe}"/>
 
-                    <p:commandButton value="Сохранить изменения" ajax="true" action="#{profileView.saveChanges()}" style="margin-right:20px;" rendered="#{profileView.itsMe}"/>
+                    <p:commandButton value="Сохранить изменения" ajax="true" action="#{profileView.saveChanges()}" update="mainform" style="margin-right:20px;" rendered="#{profileView.itsMe}"/>
                 </h:panelGrid>
             </p:tab>
             <p:tab title="Мои важные пользователи" rendered="#{profileView.itsMe}">
                 <h:panelGrid columns="2" cellpadding="5">
                     <h:panelGrid columns="2" cellpadding="10">
-                        <p:dataTable var="rec" value="#{profileView.systemUser.friends}" rows="10" scrollable="true" scrollWidth="1920"
+                        <p:dataTable var="rec" value="#{profileView.systemUser.friends}" rows="10" scrollable="true"
                                      widgetVar="friendsDatatable"
-                                     resizableColumns="true" style="margin-bottom:20px"
+                                     resizableColumns="true" style="margin-bottom:10px; margin-top:10px; height: auto; width: auto"
                                      paginator="true"
                                      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      rowsPerPageTemplate="5,10,15">
@@ -51,7 +54,9 @@
                             </f:facet>
 
                             <p:column headerText="Логин" resizable="true">
-                                <h:outputText value="#{rec.login}" />
+                                <p:link value="#{rec.login}" outcome="profile-view.xhtml">
+                                    <f:param name="id" value="#{rec.id}"/>
+                                </p:link>
                             </p:column>
 
                             <p:column headerText="Имя" resizable="true">
@@ -67,7 +72,7 @@
                                 <br/>
                                 <p:commandButton value="Отправить сообщение" type="button" onclick="PF('message1').show();"/>
                                 <br/>
-                                <p:commandButton value="Удалить из отслеживаемых пользователей" ajax="true" action="#{profileView.deleteFromFriends(rec)}" rendered="#{profileView.isMyFriend(rec)}" style="margin-right:20px;" update=":mainform:tabview"/>
+                                <p:commandButton value="Удалить из отслеживаемых пользователей" ajax="true" action="#{profileView.deleteFromFriends(rec)}" style="margin-right:20px;" update="mainform"/>
 
 
                                 <p:dialog header="Сообщение для #{profileView.systemUser.name}" widgetVar="message1" modal="true">
@@ -87,9 +92,9 @@
                  <br/>
                  <p:commandButton value="Репозитории пользователя" ajax="true" action="#{profileView.redirectToRepositories(null)}" style="margin-right:20px;" rendered="#{!profileView.itsMe}"/>
                  <br/>
-                 <p:commandButton value="Добавить в отслеживаемые" ajax="true" action="#{profileView.addToFriends()}" style="margin-right:20px;" rendered="#{!profileView.itsMe}"/>
+                 <p:commandButton value="Добавить в отслеживаемые" ajax="true" action="#{profileView.addToFriends()}" style="margin-right:20px;" rendered="#{!profileView.itsMe and !profileView.isMyFriend()}"/>
                  <br/>
-                 <p:commandButton value="Удалить из отслеживаемых пользователей" ajax="true" action="#{profileView.deleteFromFriends(null)}" style="margin-right:20px;" update=":mainform:tabview" rendered="#{!profileView.itsMe and profileView.isMyFriend(null)}"/>
+                 <p:commandButton value="Удалить из отслеживаемых пользователей" ajax="true" action="#{profileView.deleteFromFriends(null)}" style="margin-right:20px;" update=":mainform:tabview" rendered="#{!profileView.itsMe and profileView.isMyFriend()}"/>
 
 
         <p:dialog header="Сообщение для #{profileView.systemUser.name}" widgetVar="message" modal="true" rendered="#{!profileView.itsMe}">

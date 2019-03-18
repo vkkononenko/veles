@@ -23,9 +23,9 @@
     </f:view>
 
     <ui:define name="content">
-        <p:dataTable var="rec" value="#{viewRepositories.repositoryList}" rows="10" scrollable="true" scrollWidth="1920"
+        <p:dataTable var="rec" value="#{viewRepositories.repositoryList}" rows="10" scrollable="true" 
                      widgetVar="datatable"
-                     resizableColumns="true" style="margin-bottom:20px"
+                     resizableColumns="true" style="margin-bottom:10px; margin-top:10px; height: auto; width: auto"
                      paginator="true"
                      rowKey="#{rec.id}"
                      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"

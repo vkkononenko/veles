@@ -34,9 +34,9 @@
 
             <p:tab id="versions" title="Версии">
                 <h:panelGrid columns="2" cellpadding="10">
-                    <p:dataTable var="rec" value="#{repositoryView.repository.versions}" rows="10" scrollable="true" scrollWidth="1920"
+                    <p:dataTable var="rec" value="#{repositoryView.repository.versions}" rows="10" scrollable="true"
                                  widgetVar="versionsDatatable"
-                                 resizableColumns="true" style="margin-bottom:20px"
+                                 resizableColumns="true" style="margin-bottom:10px; margin-top:10px; height: auto; width: auto"
                                  paginator="true"
                                  paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                  rowsPerPageTemplate="5,10,15">
@@ -64,6 +64,16 @@
                 <p:commandButton value="Добавить версию" ajax="true" type="button" onclick="PF('dlg2').show();"/>
 
                 <p:dialog header="Добавление версии" widgetVar="dlg2" minHeight="40">
+                    <h:panelGrid columns="2" cellpadding="10">
+                        <p:outputLabel for="lat" value="Широта центра"/>
+                        <p:inputText id="lat" value="#{repositoryView.lat}"/>
+
+                        <p:outputLabel for="lon" value="Долгота центра"/>
+                        <p:inputText id="lon" value="#{repositoryView.lon}"/>
+
+                        <p:outputLabel for="zoom" value="Зум (целое число)"/>
+                        <p:inputText id="zoom" value="#{repositoryView.zoom}"/>
+                    </h:panelGrid>
                     <p:outputLabel for="newData"/>
                     <p:inputText id="newData" value="#{repositoryView.data}"/>
                     <p:commandButton value="Добавить версию" ajax="true" action="#{repositoryView.addVersion()}" onclick="PF('dlg2').hide();" rendered="#{repositoryView.Updatable()}" update="mainform"/>
@@ -76,10 +86,12 @@
                             <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&amp;apikey=74c882a5-c372-4385-bc86-bb09895d7669"></script>
                             <script type="text/javascript">
                                 ymaps.ready(function () {
-
+                                    var lat = "#{repositoryView.version.lat}";
+                                    var lon = "#{repositoryView.version.lon}";
+                                    var zoom = "#{repositoryView.version.zoom}";
                                     var map = new ymaps.Map('yandexMap', {
-                                                center: [55.79, 37.64],
-                                                zoom: 10,
+                                                center: [lat, lon],
+                                                zoom: zoom,
                                                 controls: ['zoomControl']
                                             }),
                                             objectManager = new ymaps.ObjectManager();
@@ -96,11 +108,14 @@
                         <div id="googleMap" style="width: 1024px; height: 768px">
                             <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD436Ywwqs0WqNmOkL0Yesx-AU7PG56Qjs&amp;callback=initMap"></script>
                             <script type="text/javascript">
+                                var lat = "#{repositoryView.version.lat}";
+                                var lon = "#{repositoryView.version.lon}";
+                                var zoom = "#{repositoryView.version.zoom}";
                                 var map;
                                 function initMap() {
                                     map = new google.maps.Map(document.getElementById('googleMap'), {
-                                        zoom: 4,
-                                        center: {lat: -28, lng: 137}
+                                        zoom: +zoom,
+                                        center: {lat: +lat, lng: +lon}
                                     });
                                     map.data.loadGeoJson('http://localhost:8080/veles/rest/getGeoJson?id=#{repositoryView.getVersionId()}');
                                 }
@@ -113,9 +128,9 @@
 
             <p:tab id="followers" title="Подписчики">
                 <h:panelGrid columns="2" cellpadding="10">
-                    <p:dataTable var="rec" value="#{repositoryView.repository.followers}" rows="10" scrollable="true" scrollWidth="1920"
+                    <p:dataTable var="rec" value="#{repositoryView.repository.followers}" rows="10" scrollable="true"
                                  widgetVar="usersDatatable"
-                                 resizableColumns="true" style="margin-bottom:20px"
+                                 resizableColumns="true" style="margin-bottom:10px; margin-top:10px; height: auto; width: auto"
                                  paginator="true"
                                  paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                  rowsPerPageTemplate="5,10,15">
@@ -147,16 +162,16 @@
                 <p:commandButton value="Добавить подписчиков изменения" ajax="true" type="button" onclick="PF('dlg1').show();" rendered="#{repositoryView.Updatable()}"/>
 
                 <p:dialog header="Добавление подписчиков" widgetVar="dlg1" minHeight="40">
-                    <p:dataTable var="rec" value="#{repositoryView.systemUserList}" rows="10" scrollable="true" scrollWidth="1920"
+                    <p:dataTable var="rec" value="#{repositoryView.systemUserList}" rows="10" scrollable="true"
                                  widgetVar="usersDatatable"
-                                 resizableColumns="true" style="margin-bottom:20px"
+                                 resizableColumns="true" style="margin-bottom:10px; margin-top:10px; height: auto; width: auto"
                                  paginator="true"
                                  selection="#{repositoryView.selectedUsers}"
                                  rowKey="#{rec.id}"
                                  paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                  rowsPerPageTemplate="5,10,15">
 
-                        <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                        <p:column selectionMode="multiple" style="margin-bottom:10px; text-align:center"/>
                         <p:column headerText="Ид пользователя" resizable="true">
                             <p:link value="#{rec.id}">
                                 <f:param name="id" value="#{rec.id}"/>
@@ -180,9 +195,9 @@
             <p:tab title="Контроль качества репозитория">
                 <h:panelGrid columns="2" cellpadding="10">
                     <h:panelGrid columns="2" cellpadding="10">
-                        <p:dataTable var="rec" value="#{repositoryView.repository.grades}" rows="10" scrollable="true" scrollWidth="1920"
+                        <p:dataTable var="rec" value="#{repositoryView.repository.grades}" rows="10" scrollable="true"
                                      widgetVar="usersDatatable"
-                                     resizableColumns="true" style="margin-bottom:20px"
+                                     resizableColumns="true" style="margin-bottom:10px; margin-top:10px; height: auto; width: auto"
                                      paginator="true"
                                      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      rowsPerPageTemplate="5,10,15">

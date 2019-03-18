@@ -55,6 +55,10 @@ public class UserSession implements Serializable {
         }
     }
 
+    public Long getId() {
+        return systemUser.getId();
+    }
+
     public SystemUser getSystemUser() {
         return systemUser;
     }

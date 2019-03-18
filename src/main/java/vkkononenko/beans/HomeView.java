@@ -84,7 +84,7 @@ public class HomeView implements Serializable {
             return 0;
         }
         for(Repository repository : userSession.getSystemUser().getRepositories()) {
-            if(repository.getGrades() == null) {
+            if(!repository.isAccepted()) {
                 count++;
             }
         }

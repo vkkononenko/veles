@@ -8,9 +8,14 @@ import java.util.List;
 
 @Entity
 public class Version extends EntityBase {
-
     @javax.persistence.Version
     public long version = 0;
+
+    private Double lat;
+
+    private Double lon;
+
+    private Integer zoom;
 
     @Column(columnDefinition = "text")
     private String data;
@@ -27,6 +32,30 @@ public class Version extends EntityBase {
         this.version = version;
     }
 
+    public Double getLat() {
+        return lat;
+    }
+
+    public void setLat(Double lat) {
+        this.lat = lat;
+    }
+
+    public Double getLon() {
+        return lon;
+    }
+
+    public void setLon(Double lon) {
+        this.lon = lon;
+    }
+
+    public Integer getZoom() {
+        return zoom;
+    }
+
+    public void setZoom(Integer zoom) {
+        this.zoom = zoom;
+    }
+
     public String getData() {
         return data;
     }
@@ -34,4 +63,5 @@ public class Version extends EntityBase {
     public void setData(String data) {
         this.data = data;
     }
+
 }

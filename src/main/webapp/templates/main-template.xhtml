@@ -23,7 +23,7 @@
 
         <p:menu toggleable="true">
             <p:menuitem value="Рабочий стол" url="dashboard.xhtml"/>
-            <p:menuitem value="Мой профиль" url="profile-view.xhtml"/>
+            <p:menuitem value="Мой профиль" url="profile-view.xhtml?id=#{userSession.id}"/>
             <p:submenu label="Мои данные">
                 <p:menuitem value="Мои репозитории" url="view-repositories.xhtml"/>
                 <p:menuitem value="Мои сообщения" url="my-messages.xhtml"/>

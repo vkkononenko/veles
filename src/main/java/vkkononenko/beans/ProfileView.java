@@ -1,16 +1,10 @@
 package vkkononenko.beans;
 
-import org.primefaces.context.RequestContext;
-import org.primefaces.event.FileUploadEvent;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
 import vkkononenko.UserSession;
 import vkkononenko.models.Message;
 import vkkononenko.models.SystemUser;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseId;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -40,23 +34,17 @@ public class ProfileView implements Serializable {
 
     private boolean itsMe;
 
-    private boolean isMyFriend;
-
     private String text;
 
     @Transactional
     public void onLoad() {
-        if(id == null) {
-            systemUser = userSession.getSystemUser();
+        systemUser = em.find(SystemUser.class, id);
+        if(systemUser.getId().equals(userSession.getSystemUser().getId())) {
             itsMe = true;
         } else {
-            systemUser = em.find(SystemUser.class, id);
-            if(systemUser.getId() == userSession.getSystemUser().getId()) {
-                itsMe = true;
-            } else {
-                itsMe = false;
-            }
+            itsMe = false;
         }
+        em.refresh(systemUser);
     }
 
     public void redirectToRepositories(SystemUser systemUser) throws IOException {
@@ -68,18 +56,22 @@ public class ProfileView implements Serializable {
     }
 
     @Transactional
-    public void deleteFromFriends(SystemUser systemUser) {
-        if(systemUser == null) {
-           userSession.getSystemUser().getFriends().remove(this.systemUser);
+    public void deleteFromFriends(SystemUser friend) {
+        if(friend != null) {
+            systemUser.getFriends().remove(friend);
+            em.merge(systemUser);
+            userSession.setSystemUser(systemUser);
         } else {
             userSession.getSystemUser().getFriends().remove(systemUser);
+            em.merge(userSession.getSystemUser());
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Сообщение!", "Вы перестали отслеживать данного пользователя!"));
         }
-        em.merge(userSession.getSystemUser());
     }
 
     @Transactional
     public void saveChanges() {
         em.merge(systemUser);
+        userSession.setSystemUser(systemUser);
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Сообщение!", "Профиль успешно обновлен!"));
     }
 
@@ -102,11 +94,7 @@ public class ProfileView implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Сообщение!", ""));
     }
 
-    public boolean isMyFriend(SystemUser systemUser) {
-        if(systemUser == null) {
-            userSession.getSystemUser().getFriends().remove(this.systemUser);
-            systemUser = this.systemUser;
-        }
+    public boolean isMyFriend() {
         for(SystemUser friend : userSession.getSystemUser().getFriends()) {
             if(friend.getId().equals(systemUser.getId())) {
                 return true;

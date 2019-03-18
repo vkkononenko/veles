@@ -52,6 +52,12 @@ public class RepositoryView implements Serializable {
 
     private String data;
 
+    private Double lat;
+
+    private Double lon;
+
+    private Integer zoom;
+
     public void onLoad() {
         grades = new ArrayList<>();
         Query q = em.createQuery("select s from SystemUser s where s.id <> :myId");
@@ -92,7 +98,9 @@ public class RepositoryView implements Serializable {
     @Transactional
     public void removeSubscriber(SystemUser systemUser) {
         repository.getFollowers().remove(systemUser);
+        systemUser.getRepositories().remove(repository);
         em.merge(repository);
+        em.merge(systemUser);
     }
 
     @Transactional
@@ -103,10 +111,13 @@ public class RepositoryView implements Serializable {
             em.persist(grade);
             grades.add(grade);
         }
+        repository.getGrades().addAll(grades);
         em.merge(repository);
         for(SystemUser systemUser:selectedUsers) {
-            systemUser.getNeedGrade().add(repository);
-            em.merge(systemUser);
+            if(!systemUser.getRepositories().contains(repository)) {
+                systemUser.getNeedGrade().add(repository);
+                em.merge(systemUser);
+            }
         }
     }
 
@@ -114,6 +125,9 @@ public class RepositoryView implements Serializable {
     public void addVersion() {
         Version version = new Version();
         version.setData(data);
+        version.setLat(lat);
+        version.setLon(lon);
+        version.setZoom(zoom);
         em.persist(version);
         repository.getVersions().add(version);
         repository.setAccepted(false);
@@ -175,6 +189,14 @@ public class RepositoryView implements Serializable {
         this.version = version;
     }
 
+    public List<Grade> getGrades() {
+        return grades;
+    }
+
+    public void setGrades(List<Grade> grades) {
+        this.grades = grades;
+    }
+
     public UserSession getUserSession() {
         return userSession;
     }
@@ -205,5 +227,29 @@ public class RepositoryView implements Serializable {
 
     public void setData(String data) {
         this.data = data;
+    }
+
+    public Double getLat() {
+        return lat;
+    }
+
+    public void setLat(Double lat) {
+        this.lat = lat;
+    }
+
+    public Double getLon() {
+        return lon;
+    }
+
+    public void setLon(Double lon) {
+        this.lon = lon;
+    }
+
+    public Integer getZoom() {
+        return zoom;
+    }
+
+    public void setZoom(Integer zoom) {
+        this.zoom = zoom;
     }
 }

@@ -41,9 +41,9 @@
                     </h:panelGrid>
                 </p:dialog>
 
-                <p:dataTable var="rec" value="#{searchView.systemUserList}" rows="10" scrollable="true" scrollWidth="1920"
+                <p:dataTable var="rec" value="#{searchView.systemUserList}" rows="10" scrollable="true" 
                      widgetVar="usersdatatable"
-                     resizableColumns="true" style="margin-bottom:20px"
+                     resizableColumns="true" style="margin-bottom:10px; margin-top:10px; height: auto; width: auto"
                      paginator="true"
                      rowKey="#{rec.id}"
                      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -92,9 +92,9 @@
                     </h:panelGrid>
                 </p:dialog>
 
-                <p:dataTable var="rec" value="#{searchView.repositoryList}" rows="10" scrollable="true" scrollWidth="1920"
+                <p:dataTable var="rec" value="#{searchView.repositoryList}" rows="10" scrollable="true" 
                              widgetVar="repositoriesdatatable"
-                             resizableColumns="true" style="margin-bottom:20px"
+                             resizableColumns="true" style="margin-bottom:10px; margin-top:10px; height: auto; width: auto"
                              paginator="true"
                              rowKey="#{rec.id}"
                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -122,6 +122,58 @@
 
                     <p:column headerText="Акцептован" resizable="true">
                         <h:selectBooleanCheckbox value="#{rec.accepted}" disabled="true"/>
+                    </p:column>
+
+                </p:dataTable>
+            </p:tab>
+
+            <p:tab id="guideTab" title="Поиск гайда">
+                <p:commandButton value="Критерии поиска" type="button" onclick="PF('guidesFilter').show()" update=":mainform:tabview:panelguidefilter"/>
+                <p:dialog id="guidesfilter" header="Поиск" widgetVar="guidesFilter" minHeight="40" >
+                    <h:panelGrid id="panelguidefilter" columns="2" cellpadding="5">
+
+                        <h:outputText value="Ид гайда: "/>
+                        <p:inputText value="#{searchView.guideFilter.id}"/>
+
+                        <h:outputText value="Название гайда: "/>
+                        <p:inputText value="#{searchView.guideFilter.name}"/>
+
+                        <h:outputText value="Логин автора: "/>
+                        <p:inputText value="#{searchView.guideFilter.author}"/>
+
+                        <h:outputText value="Содержит (через пробел): "/>
+                        <p:inputText value="#{searchView.guideFilter.include}"/>
+
+                        <p:commandButton value="Применить" action="#{searchView.searchGuide()}" update=":mainform:tabview" onclick="PF('filter').close()"/>
+                    </h:panelGrid>
+                </p:dialog>
+
+                <p:dataTable var="rec" value="#{searchView.guideList}" rows="10" scrollable="true" 
+                             widgetVar="guidesdatatable"
+                             resizableColumns="true" style="margin-bottom:10px; margin-top:10px; height: auto; width: auto"
+                             paginator="true"
+                             rowKey="#{rec.id}"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15">
+
+                    <f:facet name="header">
+                        Поиск гайда
+                    </f:facet>
+
+                    <p:column headerText="Ид гайда" resizable="true">
+                        <p:link value="#{rec.id}" outcome="guide-view.xhtml">
+                            <f:param name="id" value="#{rec.id}"/>
+                        </p:link>
+                    </p:column>
+
+                    <p:column headerText="Логин автора  " resizable="true">
+                        <p:link value="#{rec.makeBy.login}" outcome="profile-view.xhtml">
+                            <f:param name="id" value="#{rec.makeBy.id}"/>
+                        </p:link>
+                    </p:column>
+
+                    <p:column headerText="Название гайда" resizable="true">
+                        <h:outputText value="#{rec.name}" />
                     </p:column>
 
                 </p:dataTable>

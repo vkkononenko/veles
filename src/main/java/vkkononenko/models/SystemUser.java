@@ -3,6 +3,7 @@ package vkkononenko.models;
 import vkkononenko.models.bases.EntityBase;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Blob;
 import java.util.List;
 
@@ -18,7 +19,10 @@ public class SystemUser extends EntityBase {
 
     private String orgName;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @Column(length = 4096)
+    protected String status;
+
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "friends",
             joinColumns = @JoinColumn(name = "first_friend"),
             inverseJoinColumns = @JoinColumn(name = "second_friend")
@@ -31,12 +35,20 @@ public class SystemUser extends EntityBase {
     @OneToMany(fetch = FetchType.EAGER)
     private List<Guide> guides;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "needGrade",
             joinColumns = @JoinColumn(name = "system_user_id"),
             inverseJoinColumns = @JoinColumn(name = "repository_id")
     )
     private List<Repository> needGrade;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public String getLogin() {
         return login;

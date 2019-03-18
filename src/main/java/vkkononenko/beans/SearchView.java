@@ -1,12 +1,11 @@
 package vkkononenko.beans;
 
 import org.apache.commons.lang3.StringUtils;
+import vkkononenko.filters.GuideFilter;
 import vkkononenko.filters.RepositoryFilter;
 import vkkononenko.filters.SystemUserFilter;
-import vkkononenko.models.Repository;
-import vkkononenko.models.Repository_;
-import vkkononenko.models.SystemUser;
-import vkkononenko.models.SystemUser_;
+import vkkononenko.models.*;
+
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -35,9 +34,15 @@ public class SearchView implements Serializable {
     @Inject
     private RepositoryFilter repositoryFilter;
 
+    @Inject
+    private GuideFilter guideFilter;
+
     private List<SystemUser> systemUserList;
 
-    private List<RepositoryView> repositoryList;
+    private List<Repository> repositoryList;
+
+    private List<Guide> guideList;
+
 
     public void onLoad() {
         systemUserList = new ArrayList<>();
@@ -64,7 +69,7 @@ public class SearchView implements Serializable {
     }
 
     @Transactional
-    public void searchRepositories() {
+         public void searchRepositories() {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery cq = cb.createQuery(Repository.class);
         List<Predicate> predicate_list = new LinkedList<>();
@@ -84,8 +89,30 @@ public class SearchView implements Serializable {
         repositoryList = em.createQuery(cq).getResultList();
     }
 
+    @Transactional
     public void searchGuide() {
-
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery cq = cb.createQuery(Guide.class);
+        List<Predicate> predicate_list = new LinkedList<>();
+        Root<Guide> root = cq.from(Guide.class);
+        if(guideFilter.getId() != null) {
+            predicate_list.add(cb.equal(root.get(Guide_.id), guideFilter.getId()));
+        }
+        if(StringUtils.isNotBlank(guideFilter.getName())) {
+            predicate_list.add(cb.like(cb.lower(root.get(Guide_.name)), "%" + guideFilter.getName().toLowerCase() + "%"));
+        }
+        if(StringUtils.isNotBlank(guideFilter.getAuthor())) {
+            Join<Guide, SystemUser> systemUserJoin =  root.join(Guide_.makeBy, JoinType.INNER);;
+            predicate_list.add(cb.like(cb.lower(systemUserJoin.get(SystemUser_.login)), "%" + guideFilter.getAuthor().toLowerCase() + "%"));
+        }
+        if(StringUtils.isNotBlank(guideFilter.getInclude())) {
+            String []keywords = guideFilter.getInclude().split(" ");
+            for(String keyword : keywords) {
+                predicate_list.add(cb.like(cb.lower(root.get(Guide_.text)), "%" + keyword + "%"));
+            }
+        }
+        cq.where(predicate_list.toArray(new Predicate[0]));
+        guideList = em.createQuery(cq).getResultList();
     }
 
     public SystemUserFilter getSystemUserFilter() {
@@ -104,6 +131,14 @@ public class SearchView implements Serializable {
         this.repositoryFilter = repositoryFilter;
     }
 
+    public GuideFilter getGuideFilter() {
+        return guideFilter;
+    }
+
+    public void setGuideFilter(GuideFilter guideFilter) {
+        this.guideFilter = guideFilter;
+    }
+
     public List<SystemUser> getSystemUserList() {
         return systemUserList;
     }
@@ -112,11 +147,19 @@ public class SearchView implements Serializable {
         this.systemUserList = systemUserList;
     }
 
-    public List<RepositoryView> getRepositoryList() {
+    public List<Repository> getRepositoryList() {
         return repositoryList;
     }
 
-    public void setRepositoryList(List<RepositoryView> repositoryList) {
+    public void setRepositoryList(List<Repository> repositoryList) {
         this.repositoryList = repositoryList;
+    }
+
+    public List<Guide> getGuideList() {
+        return guideList;
+    }
+
+    public void setGuideList(List<Guide> guideList) {
+        this.guideList = guideList;
     }
 }

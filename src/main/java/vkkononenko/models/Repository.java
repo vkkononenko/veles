@@ -15,9 +15,8 @@ public class Repository extends EntityBase {
 
     private boolean secret;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "followers",
-            joinColumns = @JoinColumn(name = "repository_id"),
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable( joinColumns = @JoinColumn(name = "repository_id"),
             inverseJoinColumns = @JoinColumn(name = "system_user_id")
     )
     private List<SystemUser> followers;
@@ -33,19 +32,6 @@ public class Repository extends EntityBase {
 
     private boolean accepted;
 
-    /*
-    public boolean isAccepted() {
-        if(grades == null) {
-            return true;
-        }
-        for(Grade grade : grades) {
-            if(!grade.isAccepted()) {
-                return false;
-            }
-        }
-        return true;
-    }
-    */
 
     public Repository() {
         followers = new ArrayList<>();
