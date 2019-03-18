@@ -96,15 +96,20 @@ public class RepositoryView implements Serializable {
     }
 
     @Transactional
-    public void removeSubscriber(SystemUser systemUser) {
+    public void removeSubscriber(SystemUser systemUser) throws IOException {
         repository.getFollowers().remove(systemUser);
-        systemUser.getRepositories().remove(repository);
+        systemUser.getNeedGrade().remove(repository);
+        Grade grade = repository.getGradeByUser(systemUser);
+        repository.getGrades().remove(grade);
+        grade = em.merge(grade);
+        em.remove(grade);
         em.merge(repository);
         em.merge(systemUser);
+        FacesContext.getCurrentInstance().getExternalContext().redirect("repository-view.xhtml?id=" + repository.getId());
     }
 
     @Transactional
-    public void addSubscribers() {
+    public void addSubscribers() throws IOException {
         repository.getFollowers().addAll(selectedUsers);
         for(SystemUser systemUser:selectedUsers) {
             Grade grade = new Grade(systemUser);
@@ -119,10 +124,11 @@ public class RepositoryView implements Serializable {
                 em.merge(systemUser);
             }
         }
+        FacesContext.getCurrentInstance().getExternalContext().redirect("repository-view.xhtml?id=" + repository.getId());
     }
 
     @Transactional
-    public void addVersion() {
+    public void addVersion() throws IOException {
         Version version = new Version();
         version.setData(data);
         version.setLat(lat);
@@ -136,6 +142,7 @@ public class RepositoryView implements Serializable {
             systemUser.getNeedGrade().add(repository);
             em.merge(systemUser);
         }
+        FacesContext.getCurrentInstance().getExternalContext().redirect("repository-view.xhtml?id=" + repository.getId());
     }
 
     @Transactional

@@ -8,6 +8,8 @@ import java.util.List;
 
 @Entity
 public class Version extends EntityBase {
+    private static final long serialVersionUID = 4073670823157462669L;
+
     @javax.persistence.Version
     public long version = 0;
 
@@ -19,6 +21,9 @@ public class Version extends EntityBase {
 
     @Column(columnDefinition = "text")
     private String data;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    private List<Comment> comments;
 
     public Version() {
 

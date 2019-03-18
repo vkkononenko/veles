@@ -4,6 +4,7 @@ import vkkononenko.models.SystemUser;
 import vkkononenko.models.bases.EntityBase;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
 /**
  * Created by v.kononenko on 14.01.2019.
@@ -11,6 +12,7 @@ import javax.persistence.Entity;
 @Entity
 public class Grade extends EntityBase {
 
+    @ManyToOne
     private SystemUser systemUser;
 
     private boolean accepted = false;

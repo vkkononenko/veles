@@ -139,17 +139,17 @@
                             Подписчики
                         </f:facet>
 
-                        <p:column headerText="Ид пользователя" resizable="true">
-                            <p:link value="#{rec.id}">
+                        <p:column filterBy="#{rec.id}" eaderText="Ид пользователя" resizable="true" filterMatchMode="contains">
+                            <p:link value="#{rec.id}" outcome="profile-view.xhtml">
                                 <f:param name="id" value="#{rec.id}"/>
                             </p:link>
                         </p:column>
 
-                        <p:column headerText="Логин пользователя" resizable="true">
+                        <p:column filterBy="#{rec.login}" eaderText="Логин пользователя" resizable="true" filterMatchMode="contains">
                             <h:outputText value="#{rec.login}" />
                         </p:column>
 
-                        <p:column headerText="Имя пользователя" resizable="true">
+                        <p:column filterBy="#{rec.name}" eaderText="Имя пользователя" resizable="true" filterMatchMode="contains">
                             <h:outputText value="#{rec.name}" />
                         </p:column>
 
@@ -172,19 +172,21 @@
                                  rowsPerPageTemplate="5,10,15">
 
                         <p:column selectionMode="multiple" style="margin-bottom:10px; text-align:center"/>
-                        <p:column headerText="Ид пользователя" resizable="true">
-                            <p:link value="#{rec.id}">
+
+                        <p:column filterBy="#{rec.id}" eaderText="Ид пользователя" resizable="true" filterMatchMode="contains">
+                            <p:link value="#{rec.id}" outcome="profile-view.xhtml">
                                 <f:param name="id" value="#{rec.id}"/>
                             </p:link>
                         </p:column>
 
-                        <p:column headerText="Логин пользователя" resizable="true">
+                        <p:column filterBy="#{rec.login}" eaderText="Логин пользователя" resizable="true" filterMatchMode="contains">
                             <h:outputText value="#{rec.login}" />
                         </p:column>
 
-                        <p:column headerText="Имя пользователя" resizable="true">
+                        <p:column filterBy="#{rec.name}" eaderText="Имя пользователя" resizable="true" filterMatchMode="contains">
                             <h:outputText value="#{rec.name}" />
                         </p:column>
+
                         <f:facet name="footer">
                             <p:commandButton value="Добавить подписчика изменения" ajax="true" action="#{repositoryView.addSubscribers()}" rendered="#{repositoryView.Updatable()}" onclick="PF('dlg1').hide();" update="mainform"/>
                         </f:facet>

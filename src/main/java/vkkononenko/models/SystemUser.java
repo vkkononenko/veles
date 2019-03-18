@@ -10,6 +10,8 @@ import java.util.List;
 @Entity
 public class SystemUser extends EntityBase {
 
+    private static final long serialVersionUID = -2834044366197086722L;
+
     @Column(unique = true)
     private String login;
 
