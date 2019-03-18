@@ -54,7 +54,7 @@
                         </p:column>
 
                         <p:column headerText="Действия" resizable="true">
-                            <p:commandButton value="Просмотр данных на карте" onclick="#{repositoryView.setVersionForMap(rec)}" oncomplete="PF('dlg3').show();" update="mainform:tabview:j_idt30:0:j_idt38"/>
+                            <p:commandButton value="Просмотр данных на карте" onclick="#{repositoryView.setVersionForMap(rec)}" oncomplete="PF('dlg3').show();" update="mainform:tabview"/>
                             <br/>
                             <p:commandButton value="Акцептовать" action="#{repositoryView.accept()}" rendered="#{!repositoryView.Updatable()}" update="mainform"/>
                         </p:column>

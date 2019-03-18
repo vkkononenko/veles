@@ -90,14 +90,6 @@ public class GuideView implements Serializable {
         this.id = id;
     }
 
-    public UserSession getUserSession() {
-        return userSession;
-    }
-
-    public void setUserSession(UserSession userSession) {
-        this.userSession = userSession;
-    }
-
     public HelpUnit getHelpUnit() {
         return helpUnit;
     }
