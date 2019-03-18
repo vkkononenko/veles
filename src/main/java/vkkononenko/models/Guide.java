@@ -10,15 +10,12 @@ import javax.persistence.ManyToOne;
  * Created by v.kononenko on 12.03.2019.
  */
 @Entity
-public class HelpUnit extends RankBase {
+public class Guide extends RankBase {
 
-    public String name;
-
-    @Column(columnDefinition = "text")
-    public String keyWorlds;
+    protected String name;
 
     @Column(columnDefinition = "text")
-    public String text;
+    protected String text;
 
     @ManyToOne
     private SystemUser makeBy;
@@ -29,14 +26,6 @@ public class HelpUnit extends RankBase {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getKeyWorlds() {
-        return keyWorlds;
-    }
-
-    public void setKeyWorlds(String keyWorlds) {
-        this.keyWorlds = keyWorlds;
     }
 
     public String getText() {

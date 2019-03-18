@@ -35,8 +35,8 @@
                     <p:ajax event="rowDblselect" listener="#{viewMyMessages.onRowSelect}" update=":mainform:tabview"  oncomplete="PF('message1').show()"/>
 
                     <p:dialog header="Сообщение от #{viewMyMessages.selected.from.name}" widgetVar="message1" modal="true">
-                        <p:textEditor widgetVar="editor1" value="#{viewMyMessages.selected.text}" height="300" style="margin-bottom:10px"/>
-                        <p:textEditor widgetVar="editor2" value="#{viewMyMessages.text}" height="300" style="margin-bottom:10px"/>
+                        <p:textEditor widgetVar="editor1" value="#{viewMyMessages.selected.text}" height="300" style="margin-bottom:10px; height: auto; width: auto"/>
+                        <p:textEditor widgetVar="editor2" value="#{viewMyMessages.text}" height="300" style="margin-bottom:10px; height: auto; width: auto"/>
                         <p:commandButton value="Ответить" action="#{viewMyMessages.sendMessageTo(rec)}" oncomplete="PF('message1').hide()"/>
                         <p:commandButton value="Очистить" type="button" onclick="PF('editor2').clear();" icon="pi pi-times"/>
                     </p:dialog>
@@ -50,7 +50,7 @@
                     </p:column>
 
                     <p:column headerText="Текст" resizable="true">
-                        <p:textEditor widgetVar="editor2" value="#{rec.text}" height="300" style="margin-bottom:10px">
+                        <p:textEditor widgetVar="editor2" value="#{rec.text}" style="margin-bottom:10px; height: auto; width: auto">
                             <f:facet name="toolbar">
                                 <span class="ql-formats"/>
                                  <span class="ql-formats"/>
@@ -64,7 +64,7 @@
                         <p:commandButton value="Удалить сообщение" action="#{viewMyMessages.deleteMessage(rec, true)}" update=":mainform:tabview"/>
 
                         <p:dialog header="Сообщение для #{rec.from.name}" widgetVar="message1" modal="true">
-                            <p:textEditor widgetVar="editor1" value="#{viewMyMessages.text}" height="300" style="margin-bottom:10px"/>
+                            <p:textEditor widgetVar="editor1" value="#{viewMyMessages.text}" height="300" style="margin-bottom:10px; height: auto; width: auto"/>
                             <p:commandButton value="Отправить" action="#{viewMyMessages.sendMessageTo(rec)}" oncomplete="PF('message1').hide()"/>
                             <p:commandButton value="Очистить" type="button" onclick="PF('editor1').clear();" icon="pi pi-times"/>
                         </p:dialog>
@@ -89,7 +89,7 @@
                     </p:column>
 
                     <p:column headerText="Текст" resizable="true">
-                        <p:textEditor widgetVar="editor2" value="#{rec.text}" height="300" style="margin-bottom:10px">
+                        <p:textEditor widgetVar="editor2" value="#{rec.text}" height="300" style="margin-bottom:10px; height: auto; width: auto">
                             <f:facet name="toolbar">
                                 <span class="ql-formats"/>
                                 <span class="ql-formats"/>

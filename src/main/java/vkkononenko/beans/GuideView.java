@@ -1,7 +1,8 @@
 package vkkononenko.beans;
 
 import vkkononenko.UserSession;
-import vkkononenko.models.HelpUnit;
+import vkkononenko.models.Guide;
+import vkkononenko.models.SystemUser;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -30,35 +31,37 @@ public class GuideView implements Serializable {
     private UserSession userSession;
 
     @Inject
-    private HelpUnit helpUnit;
+    private Guide Guide;
 
     @Transactional
     public void onLoad() {
         if(id != null) {
-            helpUnit = em.find(HelpUnit.class, id);
+            Guide = em.find(Guide.class, id);
         } else {
-            helpUnit = new HelpUnit();
+            Guide = new Guide();
         }
     }
 
     public boolean Updatable() {
-        if(helpUnit.getMakeBy() == null) {
-            helpUnit.setMakeBy(userSession.getSystemUser());
+        if(Guide.getMakeBy() == null) {
+            Guide.setMakeBy(userSession.getSystemUser());
         }
-        return helpUnit.getMakeBy().getId().equals(userSession.getSystemUser().getId());
+        return Guide.getMakeBy().getId().equals(userSession.getSystemUser().getId());
     }
 
     @Transactional
     public void up() {
-        helpUnit.setRank(helpUnit.getRank() + 1);
-        em.merge(helpUnit);
+        Guide.setRank(Guide.getRank() + 1);
+        Guide.getGradeBy().add(userSession.getSystemUser());
+        em.merge(Guide);
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Сообщение!", "Вы положительно оценили данный гайд"));
     }
 
     @Transactional
     public void down() {
-        helpUnit.setRank(helpUnit.getRank() - 1);
-        em.merge(helpUnit);
+        Guide.setRank(Guide.getRank() - 1);
+        Guide.getGradeBy().add(userSession.getSystemUser());
+        em.merge(Guide);
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Сообщение!", "Вы отрицательно оценили данный гайд"));
     }
 
@@ -66,20 +69,36 @@ public class GuideView implements Serializable {
     public void save() throws IOException {
         try {
             if(id == null) {
-                helpUnit.setMakeBy(userSession.getSystemUser());
-                em.persist(helpUnit);
+                Guide.setMakeBy(userSession.getSystemUser());
+                em.persist(Guide);
                 em.flush();
-                userSession.getSystemUser().getGuides().add(helpUnit);
+                userSession.getSystemUser().getGuides().add(Guide);
                 userSession.setSystemUser(em.merge(userSession.getSystemUser()));
             }
             else {
-                em.merge(helpUnit);
                 userSession.setSystemUser(em.merge(userSession.getSystemUser()));
+                for(SystemUser systemUser : Guide.getGradeBy()) {
+                    Guide.getGradeBy().remove(systemUser);
+                }
+                Guide.setRank(0L);
+                em.merge(Guide);
             }
         } catch (Exception ex) {
             return;
         }
-        FacesContext.getCurrentInstance().getExternalContext().redirect("guide-view.xhtml?id=" + helpUnit.getId());
+        FacesContext.getCurrentInstance().getExternalContext().redirect("guide-view.xhtml?id=" + Guide.getId());
+    }
+
+    public boolean gradable() {
+        if(Guide.getGradeBy() == null) {
+            return true;
+        }
+        for(SystemUser user:Guide.getGradeBy()) {
+            if(user.getId().equals(userSession.getSystemUser().getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public Long getId() {
@@ -90,11 +109,11 @@ public class GuideView implements Serializable {
         this.id = id;
     }
 
-    public HelpUnit getHelpUnit() {
-        return helpUnit;
+    public Guide getGuide() {
+        return Guide;
     }
 
-    public void setHelpUnit(HelpUnit helpUnit) {
-        this.helpUnit = helpUnit;
+    public void setGuide(Guide Guide) {
+        this.Guide = Guide;
     }
 }

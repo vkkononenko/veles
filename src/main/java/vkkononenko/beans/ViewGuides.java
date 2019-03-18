@@ -1,7 +1,7 @@
 package vkkononenko.beans;
 
 import vkkononenko.UserSession;
-import vkkononenko.models.HelpUnit;
+import vkkononenko.models.Guide;
 import vkkononenko.models.Repository;
 import vkkononenko.models.SystemUser;
 
@@ -34,15 +34,15 @@ public class ViewGuides implements Serializable {
     @Inject
     private SystemUser systemUser;
 
-    private List<HelpUnit> helpUnitList;
+    private List<Guide> GuideList;
 
     @Transactional
     public void onLoad() {
         if(id == null) {
-            helpUnitList = userSession.getSystemUser().getGuides();
+            GuideList = userSession.getSystemUser().getGuides();
         } else {
             systemUser = em.find(SystemUser.class, id);
-            helpUnitList = systemUser.getGuides();
+            GuideList = systemUser.getGuides();
         }
     }
 
@@ -58,6 +58,14 @@ public class ViewGuides implements Serializable {
         this.id = id;
     }
 
+    public EntityManager getEm() {
+        return em;
+    }
+
+    public void setEm(EntityManager em) {
+        this.em = em;
+    }
+
     public UserSession getUserSession() {
         return userSession;
     }
@@ -66,11 +74,19 @@ public class ViewGuides implements Serializable {
         this.userSession = userSession;
     }
 
-    public List<HelpUnit> getHelpUnitList() {
-        return helpUnitList;
+    public SystemUser getSystemUser() {
+        return systemUser;
     }
 
-    public void setHelpUnitList(List<HelpUnit> helpUnitList) {
-        this.helpUnitList = helpUnitList;
+    public void setSystemUser(SystemUser systemUser) {
+        this.systemUser = systemUser;
+    }
+
+    public List<Guide> getGuideList() {
+        return GuideList;
+    }
+
+    public void setGuideList(List<Guide> guideList) {
+        GuideList = guideList;
     }
 }

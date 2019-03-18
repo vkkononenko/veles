@@ -21,13 +21,18 @@
     </f:metadata>
 
     <ui:define name="content">
-        <p:outputLabel value="Рейтинг гайда: #{guideView.helpUnit.rank}" rendered="#{not empty guideView.helpUnit.rank}"/>
-        <p:inputText value="Название гайда: #{guideView.helpUnit.name}" style="margin-top:10px;" rendered="#{not empty guideView.helpUnit.rank}"/>
-        <p:textEditor widgetVar="editor1" value="#{guideView.helpUnit.text}" style="margin-bottom:10px; margin-top:10px; height: auto; width: auto"/>
+        <h:panelGrid columns="2" cellpadding="10">
+        <p:outputLabel value="Рейтинг гайда: #{guideView.guide.rank}" rendered="#{not empty guideView.guide}"/>
+        <h:outputLabel/>
+        <p:outputLabel value="Название гайда:" rendered="#{not empty guideView.guide}"/>
+        <p:inputText value="#{guideView.guide.name}" style="margin-top:10px;" rendered="#{not empty guideView.guide}"/>
+        </h:panelGrid>
+
+        <p:textEditor widgetVar="editor1" value="#{guideView.guide.text}" style="margin-bottom:10px; margin-top:10px; height: auto; width: auto"/>
         <p:commandButton ajax="true" value="Сохранить изменения" action="#{guideView.save()}" rendered="#{guideView.Updatable()}"/>
         <h:panelGrid columns="2" cellpadding="10">
-            <p:commandButton value="+" action="#{guideView.up}"/>
-            <p:commandButton value="-" action="#{guideView.down}"/>
+            <p:commandButton value="+" action="#{guideView.up}" disabled="#{guideView.gradable()}" update="mainform"/>
+            <p:commandButton value="-" action="#{guideView.down}" disabled="#{guideView.gradable()}" update="mainform"/>
         </h:panelGrid>
         <p:messages id="messages" showDetail="true" closable="true">
             <p:autoUpdate />

@@ -23,7 +23,7 @@
     </f:view>
 
     <ui:define name="content">
-        <p:dataTable var="rec" value="#{viewGuides.helpUnitList}" rows="10" scrollable="true" scrollWidth="1920"
+        <p:dataTable var="rec" value="#{viewGuides.guideList}" rows="10" scrollable="true" scrollWidth="1920"
                      widgetVar="datatable"
                      resizableColumns="true" style="margin-bottom:20px"
                      paginator="true"
@@ -43,10 +43,6 @@
 
             <p:column headerText="Название гайда" resizable="true">
                 <h:outputText value="#{rec.name}" />
-            </p:column>
-
-            <p:column headerText="Ключевые слова" resizable="true">
-                <h:selectBooleanCheckbox value="#{rec.keyWorlds}" disabled="true"/>
             </p:column>
 
             <f:facet name="footer">

@@ -29,7 +29,7 @@ public class SystemUser extends EntityBase {
     private List<Repository> repositories;
 
     @OneToMany(fetch = FetchType.EAGER)
-    private List<HelpUnit> guides;
+    private List<Guide> guides;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "needGrade",
@@ -86,11 +86,11 @@ public class SystemUser extends EntityBase {
         this.repositories = repositories;
     }
 
-    public List<HelpUnit> getGuides() {
+    public List<Guide> getGuides() {
         return guides;
     }
 
-    public void setGuides(List<HelpUnit> guides) {
+    public void setGuides(List<Guide> guides) {
         this.guides = guides;
     }
 
