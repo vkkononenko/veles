@@ -2,9 +2,8 @@ package vkkononenko.models;
 
 import vkkononenko.models.bases.RankBase;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by v.kononenko on 12.03.2019.
@@ -19,6 +18,9 @@ public class Guide extends RankBase {
 
     @ManyToOne
     private SystemUser makeBy;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    private List<Comment> comments;
 
     public String getName() {
         return name;
@@ -42,5 +44,13 @@ public class Guide extends RankBase {
 
     public void setMakeBy(SystemUser makeBy) {
         this.makeBy = makeBy;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }

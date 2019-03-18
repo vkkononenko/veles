@@ -1,10 +1,7 @@
 package vkkononenko.beans;
 
 import vkkononenko.UserSession;
-import vkkononenko.models.Grade;
-import vkkononenko.models.Repository;
-import vkkononenko.models.SystemUser;
-import vkkononenko.models.Version;
+import vkkononenko.models.*;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -37,6 +34,9 @@ public class RepositoryView implements Serializable {
 
     @Inject
     private Version version;
+
+    @Inject
+    private Comment comment;
 
     private List<Grade> grades;
 
@@ -164,7 +164,43 @@ public class RepositoryView implements Serializable {
         }
     }
 
-    public void setVersionForMap(Version version) throws IOException {
+    @Transactional
+    public void addComment() {
+        comment.setMakeBy(userSession.getSystemUser());
+        em.persist(comment);
+        version.getComments().add(comment);
+        em.merge(version);
+    }
+
+    @Transactional
+    public void up(Comment comment) {
+        comment.setRank(comment.getRank() + 1);
+        comment.getGradeBy().add(userSession.getSystemUser());
+        em.merge(comment);
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Сообщение!", "Вы положительно оценили данный комментарий"));
+    }
+
+    @Transactional
+    public void down(Comment comment) {
+        comment.setRank(comment.getRank() - 1);
+        comment.getGradeBy().add(userSession.getSystemUser());
+        em.merge(comment);
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Сообщение!", "Вы отрицательно оценили данный комментарий"));
+    }
+
+    public boolean gradable(Comment comment) {
+        if(comment.getGradeBy() == null) {
+            comment.setGradeBy(new ArrayList<SystemUser>());
+        }
+        for(SystemUser user:comment.getGradeBy()) {
+            if(user.getId().equals(userSession.getSystemUser().getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void setVersionForSomething(Version version) throws IOException {
         this.version = version;
     }
 
@@ -194,6 +230,14 @@ public class RepositoryView implements Serializable {
 
     public void setVersion(Version version) {
         this.version = version;
+    }
+
+    public Comment getComment() {
+        return comment;
+    }
+
+    public void setComment(Comment comment) {
+        this.comment = comment;
     }
 
     public List<Grade> getGrades() {
@@ -226,6 +270,14 @@ public class RepositoryView implements Serializable {
 
     public void setSelectedUsers(List<SystemUser> selectedUsers) {
         this.selectedUsers = selectedUsers;
+    }
+
+    public EntityManager getEm() {
+        return em;
+    }
+
+    public void setEm(EntityManager em) {
+        this.em = em;
     }
 
     public String getData() {

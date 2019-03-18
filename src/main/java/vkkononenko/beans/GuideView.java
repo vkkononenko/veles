@@ -1,6 +1,7 @@
 package vkkononenko.beans;
 
 import vkkononenko.UserSession;
+import vkkononenko.models.Comment;
 import vkkononenko.models.Guide;
 import vkkononenko.models.SystemUser;
 
@@ -14,6 +15,7 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Created by v.kononenko on 12.03.2019.
@@ -26,6 +28,9 @@ public class GuideView implements Serializable {
     private EntityManager em;
     
     private Long id;
+
+    @Inject
+    private Comment comment;
 
     @Inject
     private UserSession userSession;
@@ -50,7 +55,7 @@ public class GuideView implements Serializable {
     }
 
     @Transactional
-    public void up() {
+    public void upGuide() {
         Guide.setRank(Guide.getRank() + 1);
         Guide.getGradeBy().add(userSession.getSystemUser());
         em.merge(Guide);
@@ -58,7 +63,7 @@ public class GuideView implements Serializable {
     }
 
     @Transactional
-    public void down() {
+    public void downGuide() {
         Guide.setRank(Guide.getRank() - 1);
         Guide.getGradeBy().add(userSession.getSystemUser());
         em.merge(Guide);
@@ -89,7 +94,7 @@ public class GuideView implements Serializable {
         FacesContext.getCurrentInstance().getExternalContext().redirect("guide-view.xhtml?id=" + Guide.getId());
     }
 
-    public boolean gradable() {
+    public boolean gradableGuide() {
         if(Guide.getGradeBy() == null) {
             return true;
         }
@@ -101,6 +106,42 @@ public class GuideView implements Serializable {
         return false;
     }
 
+    @Transactional
+    public void up(Comment comment) {
+        comment.setRank(comment.getRank() + 1);
+        comment.getGradeBy().add(userSession.getSystemUser());
+        em.merge(comment);
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Сообщение!", "Вы положительно оценили данный комментарий"));
+    }
+
+    @Transactional
+    public void down(Comment comment) {
+        comment.setRank(comment.getRank() - 1);
+        comment.getGradeBy().add(userSession.getSystemUser());
+        em.merge(comment);
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Сообщение!", "Вы отрицательно оценили данный комментарий"));
+    }
+
+    public boolean gradable(Comment comment) {
+        if(comment.getGradeBy() == null) {
+            comment.setGradeBy(new ArrayList<SystemUser>());
+        }
+        for(SystemUser user:comment.getGradeBy()) {
+            if(user.getId().equals(userSession.getSystemUser().getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Transactional
+    public void addComment() {
+        comment.setMakeBy(userSession.getSystemUser());
+        em.persist(comment);
+        Guide.getComments().add(comment);
+        em.merge(Guide);
+    }
+
     public Long getId() {
         return id;
     }
@@ -109,11 +150,27 @@ public class GuideView implements Serializable {
         this.id = id;
     }
 
-    public Guide getGuide() {
+    public Comment getComment() {
+        return comment;
+    }
+
+    public void setComment(Comment comment) {
+        this.comment = comment;
+    }
+
+    public UserSession getUserSession() {
+        return userSession;
+    }
+
+    public void setUserSession(UserSession userSession) {
+        this.userSession = userSession;
+    }
+
+    public vkkononenko.models.Guide getGuide() {
         return Guide;
     }
 
-    public void setGuide(Guide Guide) {
-        this.Guide = Guide;
+    public void setGuide(vkkononenko.models.Guide guide) {
+        Guide = guide;
     }
 }

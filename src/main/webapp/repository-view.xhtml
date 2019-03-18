@@ -45,6 +45,10 @@
                             Версионирование
                         </f:facet>
 
+                        <p:column style="width:16px">
+                            <p:rowToggler />
+                        </p:column>
+
                         <p:column headerText="Версия данных" resizable="true">
                             <h:outputText value="#{rec.id}" />
                         </p:column>
@@ -54,10 +58,54 @@
                         </p:column>
 
                         <p:column headerText="Действия" resizable="true">
-                            <p:commandButton value="Просмотр данных на карте" onclick="#{repositoryView.setVersionForMap(rec)}" oncomplete="PF('dlg3').show();" update="mainform:tabview"/>
+                            <p:commandButton value="Просмотр данных на карте" onclick="#{repositoryView.setVersionForSomething(rec)}" oncomplete="PF('dlg3').show();" update="mainform:tabview"/>
                             <br/>
                             <p:commandButton value="Акцептовать" action="#{repositoryView.accept()}" rendered="#{!repositoryView.Updatable()}" update="mainform"/>
+                            <br/>
+                            <p:commandButton value="Добавить комментарий" action="#{repositoryView.setVersionForSomething(rec)}" oncomplete="PF('dlg4').show();"/>
                         </p:column>
+
+                        <p:rowExpansion>
+                            <p:dataTable var="comment" value="#{rec.comments}" rows="10" scrollable="true"
+                                         widgetVar="commentsDatatable"
+                                         resizableColumns="true" style="margin-bottom:10px; margin-top:10px; height: auto; width: auto"
+                                         paginator="true"
+                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         rowsPerPageTemplate="5,10,15">
+
+                                <f:facet name="header">
+                                    Комментарии
+                                </f:facet>
+
+                                <p:column headerText="Логин комментатора" resizable="true">
+                                    <h:outputText value="#{comment.makeBy.login}" />
+                                </p:column>
+
+                                <p:column headerText="Ранк комментария" resizable="true">
+                                    <h:outputText value="#{comment.rank}" />
+                                </p:column>
+
+                                <p:column headerText="Дата комментария" resizable="true">
+                                    <h:outputText value="#{comment.dateCreated}" />
+                                </p:column>
+
+                                <p:column headerText="Текст комментария" resizable="true">
+                                    <p:textEditor widgetVar="editor2" value="#{comment.text}" style="margin-bottom:10px; height: auto; width: auto">
+                                        <f:facet name="toolbar">
+                                            <span class="ql-formats"/>
+                                            <span class="ql-formats"/>
+                                        </f:facet>
+                                    </p:textEditor>
+                                </p:column>
+
+                                <p:column headerText="Действия" resizable="true">
+                                    <h:panelGrid columns="2" cellpadding="10">
+                                        <p:commandButton value="+" action="#{repositoryView.up(comment)}" disabled="#{repositoryView.gradable(comment)}" update="mainform"/>
+                                        <p:commandButton value="-" action="#{repositoryView.down(comment)}" disabled="#{repositoryView.gradable(comment)}" update="mainform"/>
+                                    </h:panelGrid>
+                                </p:column>
+                            </p:dataTable>
+                        </p:rowExpansion>
 
                     </p:dataTable>
                 </h:panelGrid>
@@ -123,6 +171,12 @@
                         </div>
                     </p:tab>
                 </p:tabView>
+                </p:dialog>
+
+                <p:dialog widgetVar="dlg4" header="Комментарий для #{repositoryView.version.id}" modal="true">
+                    <p:textEditor widgetVar="editor1" value="#{repositoryView.comment.text}" height="300" style="margin-bottom:10px"/>
+                        <p:commandButton value="Отправить" action="#{repositoryView.addComment}" oncomplete="PF('dlg4').hide()"/>
+                        <p:commandButton value="Очистить" type="button" onclick="PF('editor2').clear();" icon="pi pi-times"/>
                 </p:dialog>
             </p:tab>
 

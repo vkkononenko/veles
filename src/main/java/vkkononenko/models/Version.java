@@ -69,4 +69,11 @@ public class Version extends EntityBase {
         this.data = data;
     }
 
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
 }
