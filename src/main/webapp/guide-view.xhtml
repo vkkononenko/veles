@@ -78,7 +78,7 @@
         <p:commandButton value="Добавить комментарий" oncomplete="PF('dlg4').show();"/>
 
         <p:dialog widgetVar="dlg4" header="Комментарий для #{guideView.guide.name}" modal="true">
-            <p:textEditor widgetVar="editor1" value="#{guideView.comment.text}" height="300" style="margin-bottom:10px"/>
+            <p:textEditor widgetVar="editor2" value="#{guideView.comment.text}" height="300" style="margin-bottom:10px"/>
             <p:commandButton value="Отправить" action="#{guideView.addComment}" oncomplete="PF('dlg4').hide()" update="mainform"/>
             <p:commandButton value="Очистить" type="button" onclick="PF('editor2').clear();" icon="pi pi-times"/>
         </p:dialog>
