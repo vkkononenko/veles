@@ -35,7 +35,7 @@
             <p:commandButton value="-" action="#{guideView.downGuide}" disabled="#{guideView.gradableGuide()}" update="mainform"/>
         </h:panelGrid>
 
-        <p:dataTable var="comment" value="#{guideView.guide.comments}" rows="10" scrollable="true"
+        <p:dataTable var="comment" rendered="#{not empty guideView.guide.comments}" value="#{guideView.guide.comments}" rows="10" scrollable="true"
                      widgetVar="commentsDatatable"
                      resizableColumns="true" style="margin-bottom:10px; margin-top:10px; height: auto; width: auto"
                      paginator="true"
@@ -75,7 +75,7 @@
             </p:column>
         </p:dataTable>
 
-        <p:commandButton value="Добавить комментарий" oncomplete="PF('dlg4').show();"/>
+        <p:commandButton value="Добавить комментарий" rendered="#{not empty guideView.guide.id}" oncomplete="PF('dlg4').show();"/>
 
         <p:dialog widgetVar="dlg4" header="Комментарий для #{guideView.guide.name}" modal="true">
             <p:textEditor widgetVar="editor2" value="#{guideView.comment.text}" height="300" style="margin-bottom:10px"/>
