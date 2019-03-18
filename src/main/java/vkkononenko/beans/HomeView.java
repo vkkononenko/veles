@@ -1,5 +1,6 @@
 package vkkononenko.beans;
 
+import org.apache.commons.lang3.StringUtils;
 import org.primefaces.event.CloseEvent;
 import org.primefaces.event.DashboardReorderEvent;
 import org.primefaces.event.ToggleEvent;
@@ -8,8 +9,7 @@ import org.primefaces.model.DashboardModel;
 import org.primefaces.model.DefaultDashboardColumn;
 import org.primefaces.model.DefaultDashboardModel;
 import vkkononenko.UserSession;
-import vkkononenko.models.Grade;
-import vkkononenko.models.Repository;
+import vkkononenko.models.*;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -20,7 +20,11 @@ import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.criteria.*;
+import javax.transaction.Transactional;
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 
 @Named
 @ViewScoped
@@ -39,11 +43,9 @@ public class HomeView implements Serializable {
         DashboardColumn column1 = new DefaultDashboardColumn();
         DashboardColumn column2 = new DefaultDashboardColumn();
         DashboardColumn column3 = new DefaultDashboardColumn();
-
         column1.addWidget("repositories");
         column2.addWidget("friends");
         column3.addWidget("needGrade");
-
         model.addColumn(column1);
         model.addColumn(column2);
         model.addColumn(column3);
@@ -106,21 +108,17 @@ public class HomeView implements Serializable {
         return count;
     }
 
+    @Transactional
     public Integer getCountUnreadMessages() {
-        Query count = em.createQuery("select count(*) from Message message where message.to.id = :id");
-        count.setParameter("id", userSession.getSystemUser().getId());
-        return count.getResultList().size() - 1;
-    }
-
-
-    public void handleClose(CloseEvent event) {
-        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Panel Closed", "Closed panel id:'" + event.getComponent().getId() + "'");
-        addMessage(message);
-    }
-
-    public void handleToggle(ToggleEvent event) {
-        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, event.getComponent().getId() + " toggled", "Status:" + event.getVisibility().name());
-        addMessage(message);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery cq = cb.createQuery(Message.class);
+        List<Predicate> predicate_list = new LinkedList<>();
+        Root<Message> root = cq.from(Message.class);
+        predicate_list.add(cb.equal(root.get(Message_.read), false));
+        Join<Message, SystemUser> systemUserJoin =  root.join(Message_.to, JoinType.INNER);
+        predicate_list.add(cb.equal(systemUserJoin.get(SystemUser_.id), userSession.getId()));
+        cq.where(predicate_list.toArray(new Predicate[0]));
+        return em.createQuery(cq).getResultList().size();
     }
 
     private void addMessage(FacesMessage message) {

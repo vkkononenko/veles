@@ -84,14 +84,10 @@ public class ProfileView implements Serializable {
 
     @Transactional
     public void sendMessageTo(SystemUser systemUser) {
-        Message message;
-        if(systemUser == null) {
-            message = new Message(userSession.getSystemUser(), this.systemUser, text);
-        } else {
-            message = new Message(userSession.getSystemUser(), systemUser, text);
-        }
+        SystemUser from = userSession.getSystemUser();
+        Message message = new Message(from, systemUser, text);
         em.persist(message);
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Сообщение!", ""));
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Сообщение!", "Сообщение отправлено!"));
     }
 
     public boolean isMyFriend() {

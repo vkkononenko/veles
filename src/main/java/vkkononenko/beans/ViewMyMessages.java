@@ -69,6 +69,7 @@ public class ViewMyMessages implements Serializable {
         em.merge(message);
     }
 
+    @Transactional
     public void onRowSelect(SelectEvent event) throws IOException {
         this.selected = (Message) event.getObject();
         selected.setRead(true);
