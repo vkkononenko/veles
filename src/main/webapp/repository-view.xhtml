@@ -143,7 +143,7 @@
                                                 controls: ['zoomControl']
                                             }),
                                             objectManager = new ymaps.ObjectManager();
-                                    $.getJSON("http://localhost:8080/veles/rest/getGeoJson?id=#{repositoryView.getVersionId()}").done(function (geoJson) {
+                                    $.getJSON("http://env-8486196.mircloud.ru/veles/rest/getGeoJson?id=#{repositoryView.getVersionId()}").done(function (geoJson) {
                                                 // Добавляем описание объектов в формате JSON в менеджер объектов.
                                                 objectManager.add(geoJson);
                                                 // Добавляем объекты на карту.
@@ -165,7 +165,7 @@
                                         zoom: +zoom,
                                         center: {lat: +lat, lng: +lon}
                                     });
-                                    map.data.loadGeoJson('http://localhost:8080/veles/rest/getGeoJson?id=#{repositoryView.getVersionId()}');
+                                    map.data.loadGeoJson('http://env-8486196.mircloud.ru/veles/rest/getGeoJson?id=#{repositoryView.getVersionId()}');
                                 }
                             </script>
                         </div>
