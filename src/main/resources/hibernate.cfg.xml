@@ -1,8 +1,8 @@
 <session-factory>
     <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
-    <property name="connection.url">jdbc:postgresql://localhost:5432/veles</property>
-    <property name="connection.username">postgres</property>
-    <property name="connection.password">1</property>
+    <property name="connection.url">jdbc:postgresql://10.6.1.178:5432/veles</property>
+    <property name="connection.username">webadmin</property>
+    <property name="connection.password">XNFgyp66490</property>
     <property name="dialect">org.hibernate.dialect.PostgreSQL96Dialect</property>
     <property name="current_session_context_class">thread</property>
     <property name="connection.pool_size">1</property>

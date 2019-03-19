@@ -131,6 +131,7 @@ public class RepositoryView implements Serializable {
                 em.merge(systemUser);
             }
         }
+        selectedUsers = null;
         FacesContext.getCurrentInstance().getExternalContext().redirect("repository-view.xhtml?id=" + repository.getId());
     }
 
