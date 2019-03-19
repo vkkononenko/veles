@@ -28,7 +28,7 @@
         <p:inputText value="#{guideView.guide.name}" style="margin-top:10px;" rendered="#{not empty guideView.guide}"/>
         </h:panelGrid>
 
-        <p:textEditor widgetVar="editor1" value="#{guideView.guide.text}" toolbarVisible="#{!guideView.Updatable()}" readonly="#{!guideView.Updatable()}" style="margin-bottom:10px; margin-top:10px; height: auto; width: auto"/>
+        <p:textEditor widgetVar="editor1" value="#{guideView.guide.text}" toolbarVisible="#{guideView.Updatable()}" readonly="#{!guideView.Updatable()}" style="margin-bottom:10px; margin-top:10px; height: auto; width: auto"/>
         <p:commandButton ajax="true" value="Сохранить изменения" action="#{guideView.save()}" rendered="#{guideView.Updatable()}"/>
         <h:panelGrid columns="2" cellpadding="10">
             <p:commandButton value="+" action="#{guideView.upGuide}" disabled="#{guideView.gradableGuide()}" update="mainform"/>
