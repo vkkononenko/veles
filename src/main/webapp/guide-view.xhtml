@@ -32,7 +32,7 @@
         <p:commandButton ajax="true" value="Сохранить изменения" action="#{guideView.save()}" rendered="#{guideView.Updatable()}"/>
         <h:panelGrid columns="2" cellpadding="10">
             <p:commandButton value="+" action="#{guideView.upGuide}" disabled="#{guideView.gradableGuide()}" update="mainform"/>
-            <p:commandButton value="-" action="#{guideView.downGuide}" update="mainform"/>
+            <p:commandButton value="-" action="#{guideView.downGuide}" disabled="#{guideView.gradableGuide()}" update="mainform"/>
         </h:panelGrid>
 
         <p:dataTable var="comment" rendered="#{not empty guideView.guide.comments}" value="#{guideView.guide.comments}" rows="10" scrollable="true"
