@@ -110,6 +110,13 @@ public class RepositoryView implements Serializable {
 
     @Transactional
     public void addSubscribers() throws IOException {
+        for(SystemUser systemUser : repository.getFollowers()) {
+            for(SystemUser follower : selectedUsers) {
+                if(systemUser.getId().equals(follower.getId())) {
+                    selectedUsers.remove(follower);
+                }
+            }
+        }
         repository.getFollowers().addAll(selectedUsers);
         for(SystemUser systemUser:selectedUsers) {
             Grade grade = new Grade(systemUser);

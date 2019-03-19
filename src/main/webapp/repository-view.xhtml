@@ -263,15 +263,13 @@
                             </f:facet>
 
                             <p:column headerText="Логин проверяющего" resizable="true">
-                                <p:link value="#{rec.id}">
-                                    <f:param name="id" value="#{rec.systemUser.login}"/>
+                                <p:link value="#{rec.systemUser.login}" outcome="profile-view.xhtml">
+                                    <f:param name="id" value="#{rec.systemUser.id}"/>
                                 </p:link>
                             </p:column>
 
                             <p:column headerText="Имя проверяющего" resizable="true">
-                                <p:link value="#{rec.id}">
-                                    <f:param name="id" value="#{rec.systemUser.name}"/>
-                                </p:link>
+                                <h:outputText value="#{rec.systemUser.name}" />
                             </p:column>
 
                             <p:column headerText="Акцептовано" resizable="true">
