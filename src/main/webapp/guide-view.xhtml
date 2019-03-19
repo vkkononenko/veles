@@ -25,7 +25,7 @@
         <p:outputLabel value="Рейтинг гайда: #{guideView.guide.rank}" rendered="#{not empty guideView.guide}"/>
         <h:outputLabel/>
         <p:outputLabel value="Название гайда:" rendered="#{not empty guideView.guide}"/>
-        <p:inputText value="#{guideView.guide.name}" style="margin-top:10px;" rendered="#{not empty guideView.guide}"/>
+        <p:inputText value="#{guideView.guide.name}" disabled="#{!guideView.Updatable()}" style="margin-top:10px;" rendered="#{not empty guideView.guide}"/>
         </h:panelGrid>
 
         <p:textEditor widgetVar="editor1" value="#{guideView.guide.text}" toolbarVisible="#{guideView.Updatable()}" readonly="#{!guideView.Updatable()}" style="margin-bottom:10px; margin-top:10px; height: auto; width: auto"/>
