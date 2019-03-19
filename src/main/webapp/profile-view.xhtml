@@ -28,13 +28,13 @@
                     <p:textEditor id="status" widgetVar="editor1" readonly="#{!profileView.itsMe}" toolbarVisible="#{profileView.itsMe}" value="#{profileView.systemUser.status}" style="margin-bottom:10px; margin-top:10px; height: auto; width: auto"/>
 
                     <p:outputLabel for="login" value="Логин:" />
-                    <p:inputText id="login" required="true" value="#{profileView.systemUser.login}" disabled="#{!profileView.itsMe}"/>
+                    <p:inputText id="login" required="true" value="#{profileView.systemUser.login}" disabled="#{!profileView.itsMe}" style="width: auto"/>
         
                     <p:outputLabel for="name" value="Имя:" />
-                    <p:inputText id="name" value="#{profileView.systemUser.name}" disabled="#{!profileView.itsMe}"/>
+                    <p:inputText id="name" value="#{profileView.systemUser.name}" disabled="#{!profileView.itsMe}" style="width: auto"/>
         
                     <p:outputLabel for="orgName" value="Организация:" />
-                    <p:inputText id="orgName" value="#{profileView.systemUser.orgName}" disabled="#{!profileView.itsMe}"/>
+                    <p:inputText id="orgName" value="#{profileView.systemUser.orgName}" disabled="#{!profileView.itsMe}" style="width: auto"/>
 
                     <p:commandButton value="Сохранить изменения" ajax="true" action="#{profileView.saveChanges()}" update="mainform" style="margin-right:20px;" rendered="#{profileView.itsMe}"/>
                 </h:panelGrid>
