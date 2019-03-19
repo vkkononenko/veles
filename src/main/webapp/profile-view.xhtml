@@ -71,14 +71,14 @@
                             <p:column headerText="Действия" resizable="true">
                                 <p:commandButton value="Репозитории пользователя" ajax="true" action="#{profileView.redirectToRepositories(rec)}" style="margin-right:20px;"/>
                                 <br/>
-                                <p:commandButton value="Отправить сообщение" type="button" onclick="PF('message1').show();"/>
+                                <p:commandButton value="Отправить сообщение" ajax="true" action="#{profileView.setUserForMessageTo(rec)}" oncomplete="PF('message1').show();" update="mainform"/>
                                 <br/>
                                 <p:commandButton value="Удалить из отслеживаемых пользователей" ajax="true" action="#{profileView.deleteFromFriends(rec)}" style="margin-right:20px;" update="mainform"/>
 
 
-                                <p:dialog header="Сообщение для #{rec.name}" widgetVar="message1" modal="true">
+                                <p:dialog header="Сообщение для #{profileView.to.name}" widgetVar="message1" modal="true">
                                     <p:textEditor widgetVar="editor2" value="#{profileView.text}" height="300" style="margin-bottom:10px"/>
-                                    <p:commandButton value="Отправить" action="#{profileView.sendMessageTo(rec)}" oncomplete="PF('message1').hide()"/>
+                                    <p:commandButton value="Отправить" action="#{profileView.sendMessageTo(profileView.to)}" oncomplete="PF('message1').hide()"/>
                                     <p:commandButton value="Очистить" type="button" onclick="PF('editor2').clear();" icon="pi pi-times"/>
                                 </p:dialog>
                             </p:column>

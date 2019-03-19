@@ -50,8 +50,10 @@ public class ViewMyMessages implements Serializable {
 
     @Transactional
     public void sendMessageTo(Message answer) {
+        answer.setRead(true);
         Message message = new Message(userSession.getSystemUser(), answer.getFrom(), text);
         em.persist(message);
+        em.merge(answer);
         text = "";
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Сообщение!", "Сообщение успешно отправлено"));
     }

@@ -32,7 +32,7 @@
                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                              rowsPerPageTemplate="5,10,15">
 
-                    <p:ajax event="rowDblselect" listener="#{viewMyMessages.onRowSelect}" update=":mainform:tabview"/>
+                    <p:ajax event="rowSelect" listener="#{viewMyMessages.onRowSelect}" update=":mainform:tabview"/>
                     <f:facet name="header">
                         Входящие сообщения
                     </f:facet>
@@ -41,9 +41,13 @@
                         <h:selectBooleanCheckbox disabled="true" value="#{rec.read}" />
                     </p:column>
 
+                    <p:column headerText="Дата" resizable="true">
+                        <h:outputText value="#{rec.dateCreated}" />
+                    </p:column>
+
                     <p:column headerText="От" resizable="true">
                         <p:link value="#{rec.from.name}" outcome="profile-view.xhtml">
-                            <f:param name="id" value="#{rec.id}"/>
+                            <f:param name="id" value="#{rec.from.id}"/>
                         </p:link>
                     </p:column>
 
@@ -79,9 +83,13 @@
                         <h:selectBooleanCheckbox disabled="true" value="#{rec.read}" />
                     </p:column>
 
+                    <p:column headerText="Дата" resizable="true">
+                        <h:outputText value="#{rec.dateCreated}" />
+                    </p:column>
+
                     <p:column headerText="Кому" resizable="true">
                         <p:link value="#{rec.to.name}" outcome="profile-view.xhtml">
-                            <f:param name="id" value="#{rec.id}"/>
+                            <f:param name="id" value="#{rec.to.id}"/>
                         </p:link>
                     </p:column>
 

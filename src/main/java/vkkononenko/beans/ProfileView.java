@@ -30,6 +30,9 @@ public class ProfileView implements Serializable {
     @Inject
     private SystemUser systemUser;
 
+    @Inject
+    private SystemUser to;
+
     private Long id;
 
     private boolean itsMe;
@@ -112,6 +115,14 @@ public class ProfileView implements Serializable {
 
     public void setSystemUser(SystemUser systemUser) {
         this.systemUser = systemUser;
+    }
+
+    public SystemUser getTo() {
+        return to;
+    }
+
+    public void setUserForMessageTo(SystemUser to) {
+        this.to = to;
     }
 
     public Long getId() {
