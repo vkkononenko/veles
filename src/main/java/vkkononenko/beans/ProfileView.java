@@ -47,6 +47,7 @@ public class ProfileView implements Serializable {
         } else {
             itsMe = false;
         }
+        em.refresh(systemUser);
     }
 
     public void redirectToRepositories(SystemUser systemUser) throws IOException {
