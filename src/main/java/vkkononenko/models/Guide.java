@@ -3,21 +3,16 @@ package vkkononenko.models;
 import vkkononenko.models.bases.RankBase;
 
 import javax.persistence.*;
+import java.util.Comparator;
 import java.util.List;
 
 /**
  * Created by v.kononenko on 12.03.2019.
  */
 @Entity
-public class Guide extends RankBase {
+public class Guide extends RankBase implements Comparable<Guide> {
 
     protected String name;
-
-    @Column(columnDefinition = "text")
-    protected String text;
-
-    @ManyToOne
-    private SystemUser makeBy;
 
     @OneToMany(fetch = FetchType.EAGER)
     private List<Comment> comments;
@@ -30,21 +25,6 @@ public class Guide extends RankBase {
         this.name = name;
     }
 
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public SystemUser getMakeBy() {
-        return makeBy;
-    }
-
-    public void setMakeBy(SystemUser makeBy) {
-        this.makeBy = makeBy;
-    }
 
     public List<Comment> getComments() {
         return comments;
@@ -52,5 +32,10 @@ public class Guide extends RankBase {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    @Override
+    public int compareTo(Guide o) {
+        return (int) (o.rank - this.rank);
     }
 }

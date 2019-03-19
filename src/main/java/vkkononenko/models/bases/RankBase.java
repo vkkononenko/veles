@@ -12,8 +12,14 @@ public class RankBase extends EntityBase {
 
     protected Long rank = 0L;
 
+    @ManyToOne
+    private SystemUser makeBy;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     protected List<SystemUser> gradeBy;
+
+    @Column(columnDefinition = "text")
+    protected String text;
 
     public Long getRank() {
         return rank;
@@ -23,11 +29,27 @@ public class RankBase extends EntityBase {
         this.rank = rank;
     }
 
+    public SystemUser getMakeBy() {
+        return makeBy;
+    }
+
+    public void setMakeBy(SystemUser makeBy) {
+        this.makeBy = makeBy;
+    }
+
     public List<SystemUser> getGradeBy() {
         return gradeBy;
     }
 
     public void setGradeBy(List<SystemUser> gradeBy) {
         this.gradeBy = gradeBy;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 }

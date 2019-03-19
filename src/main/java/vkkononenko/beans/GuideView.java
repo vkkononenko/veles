@@ -16,6 +16,7 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Created by v.kononenko on 12.03.2019.
@@ -42,6 +43,7 @@ public class GuideView implements Serializable {
     public void onLoad() {
         if(id != null) {
             Guide = em.find(Guide.class, id);
+            Collections.sort(Guide.getComments());
         } else {
             Guide = new Guide();
         }
@@ -63,10 +65,20 @@ public class GuideView implements Serializable {
     }
 
     @Transactional
-    public void downGuide() {
+    public void downGuide() throws IOException {
         Guide.setRank(Guide.getRank() - 1);
         Guide.getGradeBy().add(userSession.getSystemUser());
-        em.merge(Guide);
+        if(Guide.getRank() <= -10) {
+            em.merge(Guide);
+            for (Comment comment: Guide.getComments()) {
+                em.remove(em.contains(comment) ? comment : em.merge(comment));
+            }
+            Guide.getMakeBy().getGuides().remove(Guide);
+            em.remove(em.contains(Guide) ? Guide : em.merge(Guide));
+            FacesContext.getCurrentInstance().getExternalContext().redirect("view-guides.xhtml");
+        } else {
+            em.merge(Guide);
+        }
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Сообщение!", "Вы отрицательно оценили данный гайд"));
     }
 
@@ -118,7 +130,13 @@ public class GuideView implements Serializable {
     public void down(Comment comment) {
         comment.setRank(comment.getRank() - 1);
         comment.getGradeBy().add(userSession.getSystemUser());
-        em.merge(comment);
+        if(comment.getRank() <= -10) {
+            Guide.getComments().remove(comment);
+            em.merge(Guide);
+            em.remove(em.contains(comment) ? comment : em.merge(comment));
+        } else {
+            em.merge(comment);
+        }
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Сообщение!", "Вы отрицательно оценили данный комментарий"));
     }
 

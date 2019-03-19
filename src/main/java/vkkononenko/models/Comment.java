@@ -10,27 +10,10 @@ import javax.persistence.ManyToOne;
  * Created by v.kononenko on 18.03.2019.
  */
 @Entity
-public class Comment extends RankBase {
+public class Comment extends RankBase implements Comparable<Comment> {
 
-    @Column(columnDefinition = "text")
-    private String text;
-
-    @ManyToOne
-    private SystemUser makeBy;
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public SystemUser getMakeBy() {
-        return makeBy;
-    }
-
-    public void setMakeBy(SystemUser makeBy) {
-        this.makeBy = makeBy;
+    @Override
+    public int compareTo(Comment o) {
+        return (int) (o.rank - this.rank);
     }
 }
