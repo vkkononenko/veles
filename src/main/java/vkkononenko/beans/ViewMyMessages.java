@@ -30,8 +30,6 @@ public class ViewMyMessages implements Serializable {
     @Inject
     private UserSession userSession;
 
-    private SystemUser systemUser;
-
     private List<Message> inputMessages;
 
     private List<Message> outputMessages;
@@ -54,6 +52,7 @@ public class ViewMyMessages implements Serializable {
     public void sendMessageTo(Message answer) {
         Message message = new Message(userSession.getSystemUser(), answer.getFrom(), text);
         em.persist(message);
+        text = "";
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Сообщение!", "Сообщение успешно отправлено"));
     }
 
@@ -74,14 +73,6 @@ public class ViewMyMessages implements Serializable {
         this.selected = (Message) event.getObject();
         selected.setRead(true);
         em.merge(selected);
-    }
-
-    public UserSession getUserSession() {
-        return userSession;
-    }
-
-    public void setUserSession(UserSession userSession) {
-        this.userSession = userSession;
     }
 
     public List<Message> getInputMessages() {

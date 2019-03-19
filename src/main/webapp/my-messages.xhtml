@@ -22,13 +22,6 @@
     <ui:define name="content">
         <p:tabView id="tabview">
             <p:tab title="Входящие">
-
-                <p:dialog header="Сообщение от #{viewMyMessages.selected.from.name}" widgetVar="message1" modal="true" style="height: 800px; width: auto">
-                    <p:textEditor widgetVar="editor1" value="#{viewMyMessages.selected.text}" height="300" style="margin-bottom:10px; height: auto; width: auto"/>
-                    <p:commandButton value="Ответить" onclick="PF('message2').show()" oncomplete="PF('message1').hide()"/>
-                    <p:commandButton value="Очистить" type="button" onclick="PF('editor2').clear();" icon="pi pi-times"/>
-                </p:dialog>
-
                 <p:dataTable var="rec" value="#{viewMyMessages.inputMessages}" rows="10" scrollable="true"
                              rowKey="#{rec.id}"
                              widgetVar="inputDatatable"
@@ -39,29 +32,28 @@
                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                              rowsPerPageTemplate="5,10,15">
 
-                    <p:ajax event="rowDblselect" listener="#{viewMyMessages.onRowSelect}" update=":mainform:tabview"  oncomplete="PF('message1').show()"/>
+                    <p:ajax event="rowDblselect" listener="#{viewMyMessages.onRowSelect}" update=":mainform:tabview"/>
                     <f:facet name="header">
                         Входящие сообщения
                     </f:facet>
 
+                    <p:column headerText="Прочитано" resizable="true">
+                        <h:selectBooleanCheckbox disabled="true" value="#{rec.read}" />
+                    </p:column>
+
                     <p:column headerText="От" resizable="true">
-                        <h:outputText value="#{rec.from.name}" />
+                        <p:link value="#{rec.from.name}" outcome="profile-view.xhtml">
+                            <f:param name="id" value="#{rec.id}"/>
+                        </p:link>
                     </p:column>
 
                     <p:column headerText="Текст" resizable="true">
-                        <p:textEditor widgetVar="editor2" value="#{rec.text}" style="margin-bottom:10px; height: auto; width: auto">
-                            <f:facet name="toolbar">
-                                <span class="ql-formats"/>
-                                 <span class="ql-formats"/>
-                            </f:facet>
-                        </p:textEditor>
+                        <p:textEditor widgetVar="editor2" value="#{rec.text}" readonly="true" toolbarVisible="false"  style="margin-bottom:10px; height: auto; width: auto"/>
                     </p:column>
 
                     <p:column headerText="Действия" resizable="true">
                         <p:commandButton value="Ответить" type="button" onclick="PF('message2').show();"/>
                         <br/>
-                        <p:commandButton value="Удалить сообщение" action="#{viewMyMessages.deleteMessage(rec, true)}" update=":mainform:tabview"/>
-
                         <p:dialog header="Сообщение для #{rec.from.name}" widgetVar="message2" modal="true" style="height: auto; width: auto">
                             <p:textEditor widgetVar="editor1" value="#{viewMyMessages.text}" height="300" style="width: auto"/>
                             <p:commandButton value="Отправить" action="#{viewMyMessages.sendMessageTo(rec)}" oncomplete="PF('message2').hide()"/>
@@ -83,25 +75,25 @@
                         Исходящие сообщения
                     </f:facet>
 
+                    <p:column headerText="Прочитано" resizable="true">
+                        <h:selectBooleanCheckbox disabled="true" value="#{rec.read}" />
+                    </p:column>
+
                     <p:column headerText="Кому" resizable="true">
-                        <h:outputText value="#{rec.to.name}" />
+                        <p:link value="#{rec.to.name}" outcome="profile-view.xhtml">
+                            <f:param name="id" value="#{rec.id}"/>
+                        </p:link>
                     </p:column>
 
                     <p:column headerText="Текст" resizable="true">
-                        <p:textEditor widgetVar="editor2" value="#{rec.text}" height="300" style="margin-bottom:10px; height: auto; width: auto">
-                            <f:facet name="toolbar">
-                                <span class="ql-formats"/>
-                                <span class="ql-formats"/>
-                            </f:facet>
-                        </p:textEditor>
-                    </p:column>
-
-                    <p:column headerText="Действия" resizable="true">
-                        <p:commandButton value="Удалить сообщение" action="#{viewMyMessages.deleteMessage(rec, false)}" update=":mainform:tabview"/>
+                        <p:textEditor widgetVar="editor2" value="#{rec.text}" readonly="true" toolbarVisible="false" height="300" style="margin-bottom:10px; height: auto; width: auto"/>
                     </p:column>
                 </p:dataTable>
             </p:tab>
         </p:tabView>
+        <p:messages id="messages" showDetail="true" closable="true">
+            <p:autoUpdate />
+        </p:messages>
     </ui:define>
 </ui:composition>
 </html>

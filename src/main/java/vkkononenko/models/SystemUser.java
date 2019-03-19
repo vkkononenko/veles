@@ -21,7 +21,7 @@ public class SystemUser extends EntityBase {
 
     private String orgName;
 
-    @Column(length = 4096)
+    @Column(columnDefinition = "text")
     protected String status;
 
     @ManyToMany(fetch = FetchType.EAGER)

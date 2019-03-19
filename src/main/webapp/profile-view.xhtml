@@ -25,7 +25,7 @@
             <p:tab title="Общая информация">
                 <h:panelGrid columns="2" cellpadding="5">
                     <p:outputLabel for="status" value="Статус:" />
-                    <p:textEditor id="status" widgetVar="editor1" value="#{profileView.systemUser.status}" style="margin-bottom:10px; margin-top:10px; height: auto; width: auto"/>
+                    <p:textEditor id="status" widgetVar="editor1" readonly="#{!profileView.itsMe}" toolbarVisible="#{profileView.itsMe}" value="#{profileView.systemUser.status}" style="margin-bottom:10px; margin-top:10px; height: auto; width: auto"/>
 
                     <p:outputLabel for="login" value="Логин:" />
                     <p:inputText id="login" required="true" value="#{profileView.systemUser.login}" disabled="#{!profileView.itsMe}"/>
@@ -75,10 +75,10 @@
                                 <p:commandButton value="Удалить из отслеживаемых пользователей" ajax="true" action="#{profileView.deleteFromFriends(rec)}" style="margin-right:20px;" update="mainform"/>
 
 
-                                <p:dialog header="Сообщение для #{profileView.systemUser.name}" widgetVar="message1" modal="true">
-                                    <p:textEditor widgetVar="editor1" value="#{profileView.text}" height="300" style="margin-bottom:10px"/>
+                                <p:dialog header="Сообщение для #{rec.name}" widgetVar="message1" modal="true">
+                                    <p:textEditor widgetVar="editor2" value="#{profileView.text}" height="300" style="margin-bottom:10px"/>
                                     <p:commandButton value="Отправить" action="#{profileView.sendMessageTo(rec)}" oncomplete="PF('message1').hide()"/>
-                                    <p:commandButton value="Очистить" type="button" onclick="PF('editor1').clear();" icon="pi pi-times"/>
+                                    <p:commandButton value="Очистить" type="button" onclick="PF('editor2').clear();" icon="pi pi-times"/>
                                 </p:dialog>
                             </p:column>
 
@@ -99,7 +99,7 @@
 
         <p:dialog header="Сообщение для #{profileView.systemUser.name}" widgetVar="message" modal="true" rendered="#{!profileView.itsMe}">
                     <p:textEditor widgetVar="editor2" value="#{profileView.text}" height="300" style="margin-bottom:10px"/>
-                    <p:commandButton value="Отправить" action="#{profileView.sendMessageTo(null)}" oncomplete="PF('message').hide()"/>
+                    <p:commandButton value="Отправить" action="#{profileView.sendMessageTo(profileView.systemUser)}" oncomplete="PF('message').hide()"/>
                     <p:commandButton value="Очистить" type="button" onclick="PF('editor2').clear();" icon="pi pi-times"/>
                 </p:dialog>
         <p:messages id="messages" showDetail="true" closable="true">
