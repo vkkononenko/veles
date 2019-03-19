@@ -35,6 +35,15 @@
             <p:commandButton value="-" action="#{guideView.downGuide}" disabled="#{guideView.gradableGuide()}" update="mainform"/>
         </h:panelGrid>
 
+
+        <p:commandButton value="Добавить комментарий" rendered="#{not empty guideView.guide.id}" oncomplete="PF('dlg4').show();"/>
+
+        <p:dialog widgetVar="dlg4" header="Комментарий для #{guideView.guide.name}" modal="true">
+            <p:textEditor widgetVar="editor2" value="#{guideView.comment.text}" height="300" style="margin-bottom:10px"/>
+            <p:commandButton value="Отправить" action="#{guideView.addComment}" oncomplete="PF('dlg4').hide()" update="mainform"/>
+            <p:commandButton value="Очистить" type="button" onclick="PF('editor2').clear();" icon="pi pi-times"/>
+        </p:dialog>
+
         <p:dataTable var="comment" rendered="#{not empty guideView.guide.comments}" value="#{guideView.guide.comments}" rows="10" scrollable="true"
                      widgetVar="commentsDatatable"
                      resizableColumns="true" style="margin-bottom:10px; margin-top:10px; height: auto; width: auto"
@@ -46,8 +55,10 @@
                 Комментарии
             </f:facet>
 
-            <p:column headerText="Логин комментатора" resizable="true">
-                <h:outputText value="#{comment.makeBy.login}" />
+            <p:column headerText="Имя комментатора" resizable="true">
+                <p:link value="#{comment.makeBy.name}" outcome="profile-view.xhtml">
+                    <f:param name="id" value="#{comment.makeBy.id}"/>
+                </p:link>
             </p:column>
 
             <p:column headerText="Ранг комментария" resizable="true">
@@ -69,14 +80,6 @@
                 </h:panelGrid>
             </p:column>
         </p:dataTable>
-
-        <p:commandButton value="Добавить комментарий" rendered="#{not empty guideView.guide.id}" oncomplete="PF('dlg4').show();"/>
-
-        <p:dialog widgetVar="dlg4" header="Комментарий для #{guideView.guide.name}" modal="true">
-            <p:textEditor widgetVar="editor2" value="#{guideView.comment.text}" height="300" style="margin-bottom:10px"/>
-            <p:commandButton value="Отправить" action="#{guideView.addComment}" oncomplete="PF('dlg4').hide()" update="mainform"/>
-            <p:commandButton value="Очистить" type="button" onclick="PF('editor2').clear();" icon="pi pi-times"/>
-        </p:dialog>
         
         <p:messages id="messages" showDetail="true" closable="true">
             <p:autoUpdate />
