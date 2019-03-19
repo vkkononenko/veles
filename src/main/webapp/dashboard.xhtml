@@ -29,7 +29,7 @@
             <p:panel id="repositories" header="Репозитории">
                 <p:link value="Всего моих репозиториев: #{homeView.getCountMyRepositories()}" outcome="view-repositories.xhtml"/>
                 <br/>
-                <p:link value="Нуждается в оценке: #{homeView.getCountMyNeedGradeRepositories()}" outcome="view-need-grade-by-me-repositories.xhtml"/>
+                <p:link value="Необходима проверка: #{homeView.getCountMeNeedGradeRepositories()}" outcome="view-need-grade-by-me-repositories.xhtml"/>
                 <br/>
                 <h:outputText value="Отклонено репозиториев: #{homeView.getCountMyNeedUpdateRepositories()}"/>
             </p:panel>
@@ -38,8 +38,8 @@
                 <p:link value="Непрочитанных сообщений: #{homeView.countUnreadMessages}" outcome="my-messages.xhtml"/>
             </p:panel>
 
-            <p:panel id="needGrade" header="Необходима проверка">
-                <h:outputText value="Необходима оценка: #{homeView.getCountMeNeedGradeRepositories()}"/>
+            <p:panel id="needGrade" header="Нуждается в оценке:">
+                <h:outputText value="Необходима оценка: #{homeView.getCountMyNeedGradeRepositories()}"/>
             </p:panel>
 
         </p:dashboard>

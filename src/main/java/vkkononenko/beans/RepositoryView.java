@@ -162,6 +162,7 @@ public class RepositoryView implements Serializable {
             repository.setAccepted(true);
             em.merge(repository);
         }
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Сообщение!", "Вы акцептовали данный репозиторий"));
     }
 
     @Transactional

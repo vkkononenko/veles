@@ -58,7 +58,7 @@
                         </p:column>
 
                         <p:column headerText="Действия" resizable="true">
-                            <p:commandButton value="Просмотр данных на карте" onclick="#{repositoryView.setVersionForSomething(rec)}" oncomplete="PF('dlg3').show();" update="mainform:tabview"/>
+                            <p:commandButton value="Просмотр данных на карте" action="#{repositoryView.setVersionForSomething(rec)}" oncomplete="PF('dlg3').show();" update="mainform:tabview"/>
                             <br/>
                             <p:commandButton value="Акцептовать" action="#{repositoryView.accept()}" rendered="#{!repositoryView.Updatable()}" update="mainform"/>
                             <br/>
@@ -127,10 +127,10 @@
                     <p:commandButton value="Добавить версию" ajax="true" action="#{repositoryView.addVersion()}" onclick="PF('dlg2').hide();" rendered="#{repositoryView.Updatable()}" update="mainform"/>
                 </p:dialog>
 
-                <p:dialog id="showmap" header="Просмотр карты" widgetVar="dlg3" minHeight="40">
+                <p:dialog id="showmap" header="Просмотр карты" widgetVar="dlg3" style="height: auto; width: auto">
                 <p:tabView>
                     <p:tab title="Яндекс">
-                        <div id="yandexMap" style="width: 1024px; height: 768px">
+                        <div id="yandexMap" style="width: 800px; height: 600px">
                             <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&amp;apikey=74c882a5-c372-4385-bc86-bb09895d7669"></script>
                             <script type="text/javascript">
                                 ymaps.ready(function () {
@@ -153,7 +153,7 @@
                         </div>
                     </p:tab>
                     <p:tab title="Гугл">
-                        <div id="googleMap" style="width: 1024px; height: 768px">
+                        <div id="googleMap" style="width: 800px; height: 600px">
                             <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD436Ywwqs0WqNmOkL0Yesx-AU7PG56Qjs&amp;callback=initMap"></script>
                             <script type="text/javascript">
                                 var lat = "#{repositoryView.version.lat}";
