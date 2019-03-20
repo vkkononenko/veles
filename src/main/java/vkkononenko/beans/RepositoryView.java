@@ -1,5 +1,6 @@
 package vkkononenko.beans;
 
+import vkkononenko.SecurityUtils;
 import vkkononenko.UserSession;
 import vkkononenko.models.*;
 
@@ -25,7 +26,7 @@ import java.util.Objects;
  */
 @Named
 @ViewScoped
-public class RepositoryView implements Serializable {
+public class RepositoryView extends SecurityUtils implements Serializable {
 
     private Long id;
 

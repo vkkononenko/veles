@@ -1,6 +1,7 @@
 package vkkononenko.beans;
 
 import org.primefaces.event.SelectEvent;
+import vkkononenko.SecurityUtils;
 import vkkononenko.UserSession;
 import vkkononenko.models.Message;
 import vkkononenko.models.SystemUser;
@@ -23,7 +24,7 @@ import java.util.List;
  */
 @Named
 @ViewScoped
-public class ViewMyMessages implements Serializable {
+public class ViewMyMessages extends SecurityUtils implements Serializable {
     @PersistenceContext(name = "veles")
     private EntityManager em;
 

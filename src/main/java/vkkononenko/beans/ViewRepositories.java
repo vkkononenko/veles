@@ -1,6 +1,7 @@
 package vkkononenko.beans;
 
 import org.hibernate.Hibernate;
+import vkkononenko.SecurityUtils;
 import vkkononenko.UserSession;
 import vkkononenko.models.Repository;
 import vkkononenko.models.SystemUser;
@@ -21,7 +22,7 @@ import java.util.List;
  */
 @Named
 @ViewScoped
-public class ViewRepositories implements Serializable {
+public class ViewRepositories extends SecurityUtils implements Serializable {
 
     @PersistenceContext(name = "veles")
     private EntityManager em;

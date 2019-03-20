@@ -1,25 +1,18 @@
 package vkkononenko.beans;
 
-import org.apache.commons.lang3.StringUtils;
-import org.primefaces.event.CloseEvent;
 import org.primefaces.event.DashboardReorderEvent;
-import org.primefaces.event.ToggleEvent;
 import org.primefaces.model.DashboardColumn;
 import org.primefaces.model.DashboardModel;
 import org.primefaces.model.DefaultDashboardColumn;
 import org.primefaces.model.DefaultDashboardModel;
-import vkkononenko.UserSession;
+import vkkononenko.SecurityUtils;
 import vkkononenko.models.*;
-
-import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
-import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
 import java.io.Serializable;
@@ -28,13 +21,10 @@ import java.util.List;
 
 @Named
 @ViewScoped
-public class HomeView implements Serializable {
+public class HomeView extends SecurityUtils implements Serializable {
 
     @PersistenceContext(name="veles")
     private EntityManager em;
-
-    @Inject
-    private UserSession userSession;
 
     private DashboardModel model;
 

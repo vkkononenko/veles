@@ -1,6 +1,7 @@
 package vkkononenko.beans;
 
 import org.apache.commons.lang3.StringUtils;
+import vkkononenko.SecurityUtils;
 import vkkononenko.filters.GuideFilter;
 import vkkononenko.filters.RepositoryFilter;
 import vkkononenko.filters.SystemUserFilter;
@@ -23,7 +24,7 @@ import java.util.List;
  */
 @Named
 @ViewScoped
-public class SearchView implements Serializable {
+public class SearchView extends SecurityUtils implements Serializable {
 
     @PersistenceContext(name = "veles")
     private EntityManager em;

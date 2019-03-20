@@ -1,5 +1,6 @@
 package vkkononenko.beans;
 
+import vkkononenko.SecurityUtils;
 import vkkononenko.UserSession;
 import vkkononenko.models.Guide;
 import vkkononenko.models.Repository;
@@ -21,7 +22,7 @@ import java.util.List;
  */
 @Named
 @ViewScoped
-public class ViewGuides implements Serializable {
+public class ViewGuides extends SecurityUtils implements Serializable {
 
     @PersistenceContext(name = "veles")
     private EntityManager em;

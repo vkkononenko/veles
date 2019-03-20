@@ -2,6 +2,7 @@ package vkkononenko.beans;
 
 import vkkononenko.models.SystemUser;
 
+import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
@@ -16,7 +17,7 @@ import java.io.IOException;
 import java.io.Serializable;
 
 @Named
-@ViewScoped
+@SessionScoped
 public class RegistrationView implements Serializable {
     @PersistenceContext(name = "veles")
     private EntityManager em;
@@ -24,8 +25,10 @@ public class RegistrationView implements Serializable {
     @Inject
     private SystemUser systemUser;
 
-    public void onLoad() {
-
+    public void onLoad() throws IOException {
+        if(systemUser.getId() != null) {
+            FacesContext.getCurrentInstance().getExternalContext().redirect("login.xhtml");
+        }
     }
 
     @Transactional

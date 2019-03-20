@@ -1,5 +1,6 @@
 package vkkononenko.beans;
 
+import vkkononenko.SecurityUtils;
 import vkkononenko.UserSession;
 import vkkononenko.models.Comment;
 import vkkononenko.models.Guide;
@@ -23,7 +24,7 @@ import java.util.Collections;
  */
 @Named
 @ViewScoped
-public class GuideView implements Serializable {
+public class GuideView extends SecurityUtils implements Serializable {
 
     @PersistenceContext(name = "veles")
     private EntityManager em;
@@ -32,9 +33,6 @@ public class GuideView implements Serializable {
 
     @Inject
     private Comment comment;
-
-    @Inject
-    private UserSession userSession;
 
     @Inject
     private Guide Guide;

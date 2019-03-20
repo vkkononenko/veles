@@ -1,5 +1,6 @@
 package vkkononenko.beans;
 
+import vkkononenko.SecurityUtils;
 import vkkononenko.UserSession;
 import vkkononenko.models.Repository;
 
@@ -17,7 +18,7 @@ import java.util.List;
  */
 @Named
 @ViewScoped
-public class ViewNeedGradeRepositories implements Serializable {
+public class ViewNeedGradeRepositories extends SecurityUtils implements Serializable {
 
     @Inject
     private UserSession userSession;

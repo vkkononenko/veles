@@ -1,5 +1,6 @@
 package vkkononenko.beans;
 
+import vkkononenko.SecurityUtils;
 import vkkononenko.UserSession;
 import vkkononenko.models.Message;
 import vkkononenko.models.SystemUser;
@@ -19,13 +20,10 @@ import java.util.Objects;
  */
 @Named
 @ViewScoped
-public class ProfileView implements Serializable {
+public class ProfileView extends SecurityUtils implements Serializable {
 
     @PersistenceContext(name = "veles")
     private EntityManager em;
-
-    @Inject
-    private UserSession userSession;
 
     @Inject
     private SystemUser systemUser;
