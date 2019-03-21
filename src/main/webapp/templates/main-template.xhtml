@@ -6,11 +6,12 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://java.sun.com/jsf/facelets">
-<ui:insert name="head">
 <h:head>
+    <link href="styles/style.css" rel="stylesheet" class="background" type="text/css"/>
+    <ui:insert name="head">
     <title>ВСТАВЬ СВОЙ ТИТЛ</title>
+    </ui:insert>
 </h:head>
-</ui:insert>
 
 <body>
 
@@ -18,7 +19,7 @@
 <ui:insert name="menu">
     <h:form>
         <p:sidebar widgetVar="sidebar1" baseZIndex="10000">
-            <h1 style="font-weight:normal">Меню</h1>
+            <h1 style="font-weight:normal; color: gold">Меню</h1>
             <p:commandButton value="Закрыть" oncomplete="PF('sidebar1').hide()"/>
 
         <p:menu toggleable="true">
