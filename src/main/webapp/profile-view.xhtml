@@ -23,10 +23,9 @@
             <p:tab title="Общая информация">
                 <h:panelGrid columns="2" cellpadding="5">
                     <p:graphicImage rendered="#{!empty(profileView.systemUser.avatar)}" url="/images/#{profileView.systemUser.id}" height="267" width="200"/>
-                    <p:outputLabel rendered="#{!profileView.itsMe}"/>
+                    <p:outputLabel  value="" rendered="#{empty(profileView.systemUser.avatar)}"/>
                     <p:fileUpload fileUploadListener="#{profileView.handleFileUpload}" mode="advanced"
                                   auto="true" sizeLimit="100000000" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" rendered="#{profileView.itsMe}"/>
-
                     <p:outputLabel for="login" value="Логин:" />
                     <p:inputText id="login" required="true" value="#{profileView.systemUser.login}" disabled="#{!profileView.itsMe}" style="width: auto"/>
         
