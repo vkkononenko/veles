@@ -1,11 +1,18 @@
 package vkkononenko.beans;
 
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import vkkononenko.SecurityUtils;
 import vkkononenko.UserSession;
 import vkkononenko.models.Message;
 import vkkononenko.models.SystemUser;
+
+import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.PhaseId;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -46,6 +53,7 @@ public class ProfileView extends SecurityUtils implements Serializable {
             itsMe = false;
         }
         em.refresh(systemUser);
+        RequestContext.getCurrentInstance().update("mainform");
     }
 
     public void redirectToRepositories(SystemUser systemUser) throws IOException {
@@ -98,6 +106,32 @@ public class ProfileView extends SecurityUtils implements Serializable {
             }
         }
         return false;
+    }
+
+    @Transactional
+    public void handleFileUpload(FileUploadEvent event) throws Exception {
+        if(event.getFile() != null) {
+            systemUser.setAvatar(event.getFile().getContents());
+            systemUser.setAvatarType(event.getFile().getContentType());
+            em.merge(systemUser);
+        }
+        RequestContext.getCurrentInstance().update("mainform");
+        UpdateFromServer();
+    }
+
+    public void UpdateFromServer() throws IOException {
+        FacesContext.getCurrentInstance().getExternalContext().redirect("profile-view.xhtml?id=" + Objects.toString(this.systemUser.getId()));
+    }
+
+    public StreamedContent getImageFromDB() throws IOException {
+        FacesContext context = FacesContext.getCurrentInstance();
+        if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
+            return new DefaultStreamedContent();
+        } else {
+            DefaultStreamedContent content = new DefaultStreamedContent(new ByteArrayInputStream(systemUser.getAvatar()),
+                    systemUser.getAvatarType());
+            return content;
+        }
     }
 
     public UserSession getUserSession() {

@@ -56,11 +56,11 @@
                     </p:column>
 
                     <p:column headerText="Действия" resizable="true">
-                        <p:commandButton value="Ответить" type="button" onclick="PF('message2').show();"/>
+                        <p:commandButton value="Ответить" ajax="true" action="#{viewMyMessages.setAnswerTo(rec)}" oncomplete="PF('message2').show();" update="mainform"/>
                         <br/>
-                        <p:dialog header="Сообщение для #{rec.from.name}" widgetVar="message2" modal="true" style="height: auto; width: auto">
+                        <p:dialog header="Сообщение для #{viewMyMessages.answer.from.name}" widgetVar="message2" modal="true" style="height: auto; width: auto">
                             <p:textEditor widgetVar="editor1" value="#{viewMyMessages.text}" height="300" style="width: auto"/>
-                            <p:commandButton value="Отправить" action="#{viewMyMessages.sendMessageTo(rec)}" oncomplete="PF('message2').hide()"/>
+                            <p:commandButton value="Отправить" action="#{viewMyMessages.sendMessageTo()}" oncomplete="PF('message2').hide()"/>
                             <p:commandButton value="Очистить" type="button" onclick="PF('editor1').clear();" icon="pi pi-times"/>
                         </p:dialog>
                     </p:column>

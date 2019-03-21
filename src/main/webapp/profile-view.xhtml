@@ -24,8 +24,10 @@
         <p:tabView id="tabview">
             <p:tab title="Общая информация">
                 <h:panelGrid columns="2" cellpadding="5">
-                    <p:outputLabel for="status" value="Статус:" />
-                    <p:textEditor id="status" widgetVar="editor1" readonly="#{!profileView.itsMe}" toolbarVisible="#{profileView.itsMe}" value="#{profileView.systemUser.status}" style="margin-bottom:10px; margin-top:10px; height: auto; width: auto"/>
+                    <p:graphicImage rendered="#{!empty(profileView.systemUser.avatar)}" url="/images/#{profileView.systemUser.id}" height="267" width="200"/>
+                    <p:outputLabel rendered="#{!profileView.itsMe}"/>
+                    <p:fileUpload fileUploadListener="#{profileView.handleFileUpload}" mode="advanced"
+                                  auto="true" sizeLimit="100000000" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" rendered="#{profileView.itsMe}"/>
 
                     <p:outputLabel for="login" value="Логин:" />
                     <p:inputText id="login" required="true" value="#{profileView.systemUser.login}" disabled="#{!profileView.itsMe}" style="width: auto"/>

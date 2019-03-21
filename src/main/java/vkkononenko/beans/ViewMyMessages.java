@@ -29,7 +29,7 @@ public class ViewMyMessages extends SecurityUtils implements Serializable {
     private EntityManager em;
 
     @Inject
-    private UserSession userSession;
+    private Message answer;
 
     private List<Message> inputMessages;
 
@@ -50,7 +50,7 @@ public class ViewMyMessages extends SecurityUtils implements Serializable {
     }
 
     @Transactional
-    public void sendMessageTo(Message answer) {
+    public void sendMessageTo() {
         answer.setRead(true);
         Message message = new Message(userSession.getSystemUser(), answer.getFrom(), text);
         em.persist(message);
@@ -60,22 +60,19 @@ public class ViewMyMessages extends SecurityUtils implements Serializable {
     }
 
     @Transactional
-    public void deleteMessage(Message message, boolean forMe) {
-        if(forMe) {
-            message.setTo(null);
-            inputMessages.remove(message);
-        } else {
-            message.setFrom(null);
-            outputMessages.remove(message);
-        }
-        em.merge(message);
-    }
-
-    @Transactional
     public void onRowSelect(SelectEvent event) throws IOException {
         this.selected = (Message) event.getObject();
         selected.setRead(true);
         em.merge(selected);
+    }
+
+
+    public Message getAnswer() {
+        return answer;
+    }
+
+    public void setAnswerTo(Message answer) {
+        this.answer = answer;
     }
 
     public List<Message> getInputMessages() {
@@ -109,5 +106,4 @@ public class ViewMyMessages extends SecurityUtils implements Serializable {
     public void setSelected(Message selected) {
         this.selected = selected;
     }
-
 }

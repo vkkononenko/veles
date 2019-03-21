@@ -24,6 +24,13 @@ public class SystemUser extends EntityBase {
     @Column(columnDefinition = "text")
     protected String status;
 
+    @Column(name="avatar", columnDefinition="bytea")
+    private byte[] avatar;
+
+    private String avatarType;
+
+    private String avatarName;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "friends",
             joinColumns = @JoinColumn(name = "first_friend"),
@@ -82,6 +89,30 @@ public class SystemUser extends EntityBase {
 
     public void setOrgName(String orgName) {
         this.orgName = orgName;
+    }
+
+    public byte[] getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(byte[] avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getAvatarType() {
+        return avatarType;
+    }
+
+    public void setAvatarType(String avatarType) {
+        this.avatarType = avatarType;
+    }
+
+    public String getAvatarName() {
+        return avatarName;
+    }
+
+    public void setAvatarName(String avatarName) {
+        this.avatarName = avatarName;
     }
 
     public List<SystemUser> getFriends() {
