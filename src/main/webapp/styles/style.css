@@ -1,0 +1,34 @@
+body {
+    background-image: url(image/background.png); /* Путь к фоновому изображению */}
+
+.ui-sidebar {
+    background-image: url(image/background.png); /* Путь к фоновому изображению */}
+
+.ui-tabs-panels {
+    background-color: #323131;
+}
+
+.ui-dashboard-column {
+    background-image: none;
+}
+
+.ui-tabs-nav {
+    background-color: #0d0d0d
+}
+
+.ui-link {
+    color: gold;
+}
+
+.ui-outputlabel {
+    color: gold;
+}
+
+.background {
+    background-image: url(image/background.png); /* Путь к фоновому изображению */
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
