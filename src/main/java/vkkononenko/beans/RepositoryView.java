@@ -18,6 +18,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -67,6 +68,9 @@ public class RepositoryView extends SecurityUtils implements Serializable {
         systemUserList = q.getResultList();
         if(id != null) {
             repository = em.find(Repository.class, id);
+            for(Version version : repository.getVersions()) {
+                Collections.sort(version.getComments());
+            }
             em.refresh(repository);
         }
     }
@@ -118,7 +122,6 @@ public class RepositoryView extends SecurityUtils implements Serializable {
         }
         for(SystemUser systemUser:selectedUsers) {
             Grade grade = new Grade(systemUser);
-            em.persist(grade);
             grades.add(grade);
         }
         repository.getGrades().addAll(grades);
@@ -140,7 +143,6 @@ public class RepositoryView extends SecurityUtils implements Serializable {
         version.setLat(lat);
         version.setLon(lon);
         version.setZoom(zoom);
-        em.persist(version);
         repository.getVersions().add(version);
         repository.setAccepted(false);
         em.merge(repository);
@@ -172,11 +174,11 @@ public class RepositoryView extends SecurityUtils implements Serializable {
     }
 
     @Transactional
-    public void addComment() {
+    public void addComment() throws IOException {
         comment.setMakeBy(userSession.getSystemUser());
-        em.persist(comment);
         version.getComments().add(comment);
         em.merge(version);
+        FacesContext.getCurrentInstance().getExternalContext().redirect("repository-view.xhtml?id=" + repository.getId());
     }
 
     @Transactional

@@ -24,10 +24,10 @@ public class Repository extends EntityBase {
     @ManyToOne
     private SystemUser makeBy;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Version> versions;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Grade> grades;
 
     private boolean accepted;

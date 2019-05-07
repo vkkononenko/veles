@@ -111,22 +111,23 @@
 
                 <p:dialog header="Добавление версии" widgetVar="dlg2" minHeight="40">
                     <h:panelGrid columns="2" cellpadding="10">
-                        <p:outputLabel for="lat" value="Широта центра"/>
+                        <p:outputLabel for="lat" value="Широта центра" style="color: #0d0d0d"/>
                         <p:inputText id="lat" value="#{repositoryView.lat}"/>
 
-                        <p:outputLabel for="lon" value="Долгота центра"/>
+                        <p:outputLabel for="lon" value="Долгота центра" style="color: #0d0d0d"/>
                         <p:inputText id="lon" value="#{repositoryView.lon}"/>
 
-                        <p:outputLabel for="zoom" value="Зум (целое число)"/>
+                        <p:outputLabel for="zoom" value="Зум (целое число)" style="color: #0d0d0d"/>
                         <p:inputText id="zoom" value="#{repositoryView.zoom}"/>
+
+                        <p:outputLabel  value="JSON" for="newData" style="color: #0d0d0d"/>
+                        <p:inputTextarea autoResize="false" id="newData" value="#{repositoryView.data}" scrollHeight="200"/>
+                        <p:commandButton value="Добавить версию" ajax="true" action="#{repositoryView.addVersion()}" onclick="PF('dlg2').hide();" rendered="#{repositoryView.Updatable()}" update="mainform"/>
                     </h:panelGrid>
-                    <p:outputLabel for="newData"/>
-                    <p:inputText id="newData" value="#{repositoryView.data}"/>
-                    <p:commandButton value="Добавить версию" ajax="true" action="#{repositoryView.addVersion()}" onclick="PF('dlg2').hide();" rendered="#{repositoryView.Updatable()}" update="mainform"/>
                 </p:dialog>
 
                 <p:dialog id="showmap" header="Просмотр карты" widgetVar="dlg3" style="height: auto; width: auto">
-                <p:tabView>
+                <p:tabView style="height: auto; width: auto">
                     <p:tab title="Яндекс">
                         <div id="yandexMap" style="width: 800px; height: 600px">
                             <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&amp;apikey=74c882a5-c372-4385-bc86-bb09895d7669"></script>
@@ -141,7 +142,7 @@
                                                 controls: ['zoomControl']
                                             }),
                                             objectManager = new ymaps.ObjectManager();
-                                    $.getJSON("http://env-8486196.mircloud.ru/veles/rest/getGeoJson?id=#{repositoryView.getVersionId()}").done(function (geoJson) {
+                                    $.getJSON("http://localhost:8080/veles/rest/getGeoJson?id=#{repositoryView.getVersionId()}").done(function (geoJson) {
                                                 // Добавляем описание объектов в формате JSON в менеджер объектов.
                                                 objectManager.add(geoJson);
                                                 // Добавляем объекты на карту.
@@ -163,7 +164,7 @@
                                         zoom: +zoom,
                                         center: {lat: +lat, lng: +lon}
                                     });
-                                    map.data.loadGeoJson('http://env-8486196.mircloud.ru/veles/rest/getGeoJson?id=#{repositoryView.getVersionId()}');
+                                    map.data.loadGeoJson('http://localhost:8080/veles/rest/getGeoJson?id=#{repositoryView.getVersionId()}');
                                 }
                             </script>
                         </div>
@@ -191,17 +192,17 @@
                             Подписчики
                         </f:facet>
 
-                        <p:column filterBy="#{rec.id}" eaderText="Ид пользователя" resizable="true" filterMatchMode="contains">
+                        <p:column headerText="Ид пользователя" resizable="true" >
                             <p:link value="#{rec.id}" outcome="profile-view.xhtml">
                                 <f:param name="id" value="#{rec.id}"/>
                             </p:link>
                         </p:column>
 
-                        <p:column filterBy="#{rec.login}" eaderText="Логин пользователя" resizable="true" filterMatchMode="contains">
+                        <p:column headerText="Логин пользователя" resizable="true" >
                             <h:outputText value="#{rec.login}" />
                         </p:column>
 
-                        <p:column filterBy="#{rec.name}" eaderText="Имя пользователя" resizable="true" filterMatchMode="contains">
+                        <p:column headerText="Имя пользователя" resizable="true" >
                             <h:outputText value="#{rec.name}" />
                         </p:column>
 
@@ -225,17 +226,17 @@
 
                         <p:column selectionMode="multiple" style="margin-bottom:10px; text-align:center"/>
 
-                        <p:column filterBy="#{rec.id}" eaderText="Ид пользователя" resizable="true" filterMatchMode="contains">
+                        <p:column headerText="Ид пользователя" resizable="true" >
                             <p:link value="#{rec.id}" outcome="profile-view.xhtml">
                                 <f:param name="id" value="#{rec.id}"/>
                             </p:link>
                         </p:column>
 
-                        <p:column filterBy="#{rec.login}" eaderText="Логин пользователя" resizable="true" filterMatchMode="contains">
+                        <p:column headerText="Логин пользователя" resizable="true" >
                             <h:outputText value="#{rec.login}" />
                         </p:column>
 
-                        <p:column filterBy="#{rec.name}" eaderText="Имя пользователя" resizable="true" filterMatchMode="contains">
+                        <p:column headerText="Имя пользователя" resizable="true" >
                             <h:outputText value="#{rec.name}" />
                         </p:column>
 

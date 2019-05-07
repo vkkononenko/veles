@@ -22,7 +22,7 @@ public class Version extends EntityBase {
     @Column(columnDefinition = "text")
     private String data;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Comment> comments;
 
     public Version() {

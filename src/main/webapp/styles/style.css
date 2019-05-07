@@ -24,6 +24,18 @@ body {
     color: gold;
 }
 
+.ui-dialog {
+    overflow: hidden;
+}
+
+.ql-container {
+    background-color: white;
+}
+
+.ql-toolbar.ql-snow {
+    background-color: white;
+}
+
 .background {
     background-image: url(image/background.png); /* Путь к фоновому изображению */
     width: 100%;

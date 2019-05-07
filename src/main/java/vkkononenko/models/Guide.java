@@ -14,7 +14,7 @@ public class Guide extends RankBase implements Comparable<Guide> {
 
     protected String name;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Comment> comments;
 
     public String getName() {
