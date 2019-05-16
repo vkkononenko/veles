@@ -11,6 +11,8 @@ import java.util.List;
 public class RankBase extends EntityBase {
 
     protected Long rank = 0L;
+    
+    protected Long count;
 
     @ManyToOne
     private SystemUser makeBy;
@@ -27,6 +29,14 @@ public class RankBase extends EntityBase {
 
     public void setRank(Long rank) {
         this.rank = rank;
+    }
+
+    public Long getCount() {
+        return count;
+    }
+
+    public void setCount(Long count) {
+        this.count = count;
     }
 
     public SystemUser getMakeBy() {

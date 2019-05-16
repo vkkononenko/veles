@@ -127,49 +127,28 @@
                 </p:dialog>
 
                 <p:dialog id="showmap" header="Просмотр карты" widgetVar="dlg3" style="height: auto; width: auto">
-                <p:tabView style="height: auto; width: auto">
-                    <p:tab title="Яндекс">
                         <div id="yandexMap" style="width: 800px; height: 600px">
                             <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&amp;apikey=74c882a5-c372-4385-bc86-bb09895d7669"></script>
                             <script type="text/javascript">
                                 ymaps.ready(function () {
-                                    var lat = "#{repositoryView.version.lat}";
-                                    var lon = "#{repositoryView.version.lon}";
-                                    var zoom = "#{repositoryView.version.zoom}";
-                                    var map = new ymaps.Map('yandexMap', {
-                                                center: [lat, lon],
-                                                zoom: zoom,
-                                                controls: ['zoomControl']
-                                            }),
-                                            objectManager = new ymaps.ObjectManager();
-                                    $.getJSON("http://localhost:8080/veles/rest/getGeoJson?id=#{repositoryView.getVersionId()}").done(function (geoJson) {
-                                                // Добавляем описание объектов в формате JSON в менеджер объектов.
-                                                objectManager.add(geoJson);
-                                                // Добавляем объекты на карту.
-                                                map.geoObjects.add(objectManager);
-                                            })});
+                                    ymaps.ready().done(function (ym) {
+                                        var myMap = new ym.Map('yandexMap', {
+                                            center: [0, 0],
+                                            zoom: 0
+                                        }, {
+                                            searchControlProvider: 'yandex#search'
+                                        });
+
+                                        jQuery.getJSON('http://localhost:8080/veles/rest/getGeoJson?id=#{repositoryView.getVersionId()}', function (json) {
+                                            var geoObjects = ym.geoQuery(json)
+                                                .addToMap(myMap)
+                                                .applyBoundsToMap(myMap, {
+                                                    checkZoomRange: true
+                                                });
+                                        });
+                                    })});
                             </script>
                         </div>
-                    </p:tab>
-                    <p:tab title="Гугл">
-                        <div id="googleMap" style="width: 800px; height: 600px">
-                            <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD436Ywwqs0WqNmOkL0Yesx-AU7PG56Qjs&amp;callback=initMap"></script>
-                            <script type="text/javascript">
-                                var lat = "#{repositoryView.version.lat}";
-                                var lon = "#{repositoryView.version.lon}";
-                                var zoom = "#{repositoryView.version.zoom}";
-                                var map;
-                                function initMap() {
-                                    map = new google.maps.Map(document.getElementById('googleMap'), {
-                                        zoom: +zoom,
-                                        center: {lat: +lat, lng: +lon}
-                                    });
-                                    map.data.loadGeoJson('http://localhost:8080/veles/rest/getGeoJson?id=#{repositoryView.getVersionId()}');
-                                }
-                            </script>
-                        </div>
-                    </p:tab>
-                </p:tabView>
                 </p:dialog>
 
                 <p:dialog widgetVar="dlg4" header="Комментарий для #{repositoryView.version.id}" modal="true">

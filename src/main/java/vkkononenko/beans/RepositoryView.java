@@ -68,9 +68,7 @@ public class RepositoryView extends SecurityUtils implements Serializable {
         systemUserList = q.getResultList();
         if(id != null) {
             repository = em.find(Repository.class, id);
-            for(Version version : repository.getVersions()) {
-                Collections.sort(version.getComments());
-            }
+            repository.getVersions().forEach(v -> Collections.sort(v.getComments()));
             em.refresh(repository);
         }
     }
@@ -201,12 +199,7 @@ public class RepositoryView extends SecurityUtils implements Serializable {
         if(comment.getGradeBy() == null) {
             comment.setGradeBy(new ArrayList<SystemUser>());
         }
-        for(SystemUser user:comment.getGradeBy()) {
-            if(user.getId().equals(userSession.getSystemUser().getId())) {
-                return true;
-            }
-        }
-        return false;
+        return comment.getGradeBy().stream().filter((SystemUser s) -> s.getId().equals(userSession.getSystemUser().getId())).findFirst().orElse(null) == null;
     }
 
     public void setVersionForSomething(Version version) throws IOException {
