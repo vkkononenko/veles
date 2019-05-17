@@ -1,7 +1,7 @@
 package vkkononenko.beans;
 
 import org.apache.commons.lang3.StringUtils;
-import vkkononenko.SecurityUtils;
+import vkkononenko.utils.SecurityUtils;
 import vkkononenko.filters.GuideFilter;
 import vkkononenko.filters.RepositoryFilter;
 import vkkononenko.filters.SystemUserFilter;
@@ -60,10 +60,10 @@ public class SearchView extends SecurityUtils implements Serializable {
             predicate_list.add(cb.like(cb.lower(root.get(SystemUser_.login)), "%" + systemUserFilter.getLogin().toLowerCase() + "%"));
         }
         if(StringUtils.isNotBlank(systemUserFilter.getName())) {
-            predicate_list.add(cb.like(cb.lower(root.get(SystemUser_.name)), "%" + systemUserFilter.getLogin().toLowerCase() + "%"));
+            predicate_list.add(cb.like(cb.lower(root.get(SystemUser_.name)), "%" + systemUserFilter.getName().toLowerCase() + "%"));
         }
         if(StringUtils.isNotBlank(systemUserFilter.getOrgName())) {
-            predicate_list.add(cb.like(cb.lower(root.get(SystemUser_.orgName)), "%" + systemUserFilter.getLogin().toLowerCase() + "%"));
+            predicate_list.add(cb.like(cb.lower(root.get(SystemUser_.orgName)), "%" + systemUserFilter.getOrgName().toLowerCase() + "%"));
         }
         cq.where(predicate_list.toArray(new Predicate[0]));
         systemUserList = em.createQuery(cq).getResultList();

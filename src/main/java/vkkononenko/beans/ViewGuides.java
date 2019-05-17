@@ -1,9 +1,8 @@
 package vkkononenko.beans;
 
-import vkkononenko.SecurityUtils;
+import vkkononenko.utils.SecurityUtils;
 import vkkononenko.UserSession;
 import vkkononenko.models.Guide;
-import vkkononenko.models.Repository;
 import vkkononenko.models.SystemUser;
 
 import javax.faces.context.FacesContext;

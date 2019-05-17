@@ -1,6 +1,7 @@
 package vkkononenko.beans;
 
-import vkkononenko.SecurityUtils;
+import vkkononenko.utils.ApplicationUtils;
+import vkkononenko.utils.SecurityUtils;
 import vkkononenko.UserSession;
 import vkkononenko.models.*;
 
@@ -13,14 +14,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Created by v.kononenko on 14.01.2019.
@@ -29,28 +29,31 @@ import java.util.Objects;
 @ViewScoped
 public class RepositoryView extends SecurityUtils implements Serializable {
 
+    @PersistenceContext(name = "veles")
+    private EntityManager em;
+
     private Long id;
 
     @Inject
     private Repository repository;
 
     @Inject
+    private Comment comment;
+
+    @Inject
     private Version version;
 
     @Inject
-    private Comment comment;
+    private UserSession userSession;
+    
+    @Inject
+    private ApplicationUtils applicationUtils;
 
     private List<Grade> grades;
-
-    @Inject
-    private UserSession userSession;
 
     private List<SystemUser> systemUserList;
 
     private List<SystemUser> selectedUsers;
-
-    @PersistenceContext(name = "veles")
-    private EntityManager em;
 
     private String data;
 
@@ -75,7 +78,7 @@ public class RepositoryView extends SecurityUtils implements Serializable {
 
     public boolean Updatable() {
         if(repository.getMakeBy() == null) {
-            repository.setMakeBy(userSession.getSystemUser());
+            return true;
         }
         return repository.getMakeBy().getId().equals(userSession.getSystemUser().getId());
     }
@@ -110,64 +113,67 @@ public class RepositoryView extends SecurityUtils implements Serializable {
         em.remove(grade);
         em.merge(repository);
         em.merge(systemUser);
+        Message message = new Message(applicationUtils.getSystemUser(), systemUser, "Пользователь ".concat(userSession.getLogin()).concat(" отписал вас от репозитория \n" +
+                "http://localhost:8080/veles/repository-view.xhtml?id=").concat(Objects.toString(repository.getId())));
+        em.persist(em.merge(message));
         FacesContext.getCurrentInstance().getExternalContext().redirect("repository-view.xhtml?id=" + repository.getId());
     }
 
     @Transactional
     public void addSubscribers() throws IOException {
-        for(SystemUser follower : selectedUsers) {
-            repository.getFollowers().add(follower);
-        }
-        for(SystemUser systemUser:selectedUsers) {
-            Grade grade = new Grade(systemUser);
-            grades.add(grade);
-        }
+        selectedUsers.stream().filter((SystemUser s) -> !repository.getFollowers().contains(s)).collect(Collectors.toList())
+                .forEach((SystemUser s) -> {
+                    repository.getFollowers().add(s);
+                    grades.add(new Grade(s));
+                    Message message = new Message(applicationUtils.getSystemUser(), s, "Пользователь ".concat(userSession.getLogin()).concat(" подписал вас на репозиторий \n"+
+                            "http://localhost:8080/veles/repository-view.xhtml?id=").concat(Objects.toString(repository.getId())));
+                    em.persist(em.merge(message));
+                });
+        selectedUsers.stream().filter((SystemUser s) -> !s.getNeedGrade().contains(repository)).collect(Collectors.toList())
+                .forEach((SystemUser s) -> { s.getNeedGrade().add(repository); em.merge(s);});
+
         repository.getGrades().addAll(grades);
         em.merge(repository);
-        for(SystemUser systemUser:selectedUsers) {
-            if(!systemUser.getRepositories().contains(repository)) {
-                systemUser.getNeedGrade().add(repository);
-                em.merge(systemUser);
-            }
-        }
         selectedUsers = null;
         FacesContext.getCurrentInstance().getExternalContext().redirect("repository-view.xhtml?id=" + repository.getId());
     }
 
     @Transactional
     public void addVersion() throws IOException {
-        Version version = new Version();
-        version.setData(data);
-        version.setLat(lat);
-        version.setLon(lon);
-        version.setZoom(zoom);
+        Version version = new Version(data);
         repository.getVersions().add(version);
         repository.setAccepted(false);
-        em.merge(repository);
-        for(SystemUser systemUser:repository.getFollowers()) {
-            systemUser.getNeedGrade().add(repository);
-            em.merge(systemUser);
-        }
+        repository.getFollowers().stream().filter((SystemUser s) -> !(s.getNeedGrade().contains(repository)))
+                .forEach((SystemUser s) -> {
+            s.getNeedGrade().add(repository);
+            em.merge(s);
+        });
+        repository.getGrades().forEach((Grade g)  -> {
+            g.setAccepted(false);
+            em.merge(repository);
+        });
+        repository.getFollowers().forEach((SystemUser s) -> {
+            Message message = new Message(applicationUtils.getSystemUser(), s, "Пользователь ".concat(userSession.getLogin()).concat(" обновил репозиторий \n" +
+                    "http://localhost:8080/veles/repository-view.xhtml?id=").concat(Objects.toString(repository.getId())));
+            em.persist(em.merge(message));
+        });
         FacesContext.getCurrentInstance().getExternalContext().redirect("repository-view.xhtml?id=" + repository.getId());
     }
 
     @Transactional
     public void accept() {
-        for(Grade grade : repository.getGrades()) {
-            if(grade.getSystemUser().getId().equals(userSession.getSystemUser().getId())) {
-                grade.setAccepted(true);
-                em.merge(grade);
-                userSession.getSystemUser().getNeedGrade().remove(repository);
-                em.merge(userSession.getSystemUser());
-            }
-        }
-        for(Grade grade : repository.getGrades()) {
-            if(!grade.isAccepted()) {
-                break;
-            }
-            repository.setAccepted(true);
-            em.merge(repository);
-        }
+        repository.getGrades().stream().filter((Grade grade) -> grade.getSystemUser().getId().equals(userSession.getSystemUser().getId()))
+                .collect(Collectors.toList()).forEach((Grade grade) -> {
+            grade.setAccepted(true);
+            userSession.getSystemUser().getNeedGrade().remove(repository);
+            em.merge(grade);
+            em.merge(userSession.getSystemUser());
+            Message message = new Message(applicationUtils.getSystemUser(), repository.getMakeBy(), "Пользователь ".concat(userSession.getLogin()).concat(" акцептовал репозиторий <br>" +
+                    "http://localhost:8080/veles/repository-view.xhtml?id=").concat(Objects.toString(repository.getId())));
+            em.persist(em.merge(message));
+        });
+        repository.setAccepted(repository.getGrades().stream().filter(Grade::isAccepted).count() == repository.getGrades().size());
+        em.merge(repository);
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Сообщение!", "Вы акцептовали данный репозиторий"));
     }
 
@@ -176,6 +182,9 @@ public class RepositoryView extends SecurityUtils implements Serializable {
         comment.setMakeBy(userSession.getSystemUser());
         version.getComments().add(comment);
         em.merge(version);
+        Message message = new Message(applicationUtils.getSystemUser(), repository.getMakeBy(), "Пользователь ".concat(userSession.getLogin()).concat(" прокомментировал репозиторий \n"+
+                "http://localhost:8080/veles/repository-view.xhtml?id=").concat(Objects.toString(repository.getId())));
+        em.persist(em.merge(message));
         FacesContext.getCurrentInstance().getExternalContext().redirect("repository-view.xhtml?id=" + repository.getId());
     }
 

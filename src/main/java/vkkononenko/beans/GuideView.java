@@ -1,6 +1,6 @@
 package vkkononenko.beans;
 
-import vkkononenko.SecurityUtils;
+import vkkononenko.utils.SecurityUtils;
 import vkkononenko.UserSession;
 import vkkononenko.models.Comment;
 import vkkononenko.models.Guide;
@@ -55,32 +55,6 @@ public class GuideView extends SecurityUtils implements Serializable {
     }
 
     @Transactional
-    public void upGuide() {
-        Guide.setRank(Guide.getRank() + 1);
-        Guide.getGradeBy().add(userSession.getSystemUser());
-        em.merge(Guide);
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Сообщение!", "Вы положительно оценили данный гайд"));
-    }
-
-    @Transactional
-    public void downGuide() throws IOException {
-        Guide.setRank(Guide.getRank() - 1);
-        Guide.getGradeBy().add(userSession.getSystemUser());
-        if(Guide.getRank() <= -10) {
-            em.merge(Guide);
-            for (Comment comment: Guide.getComments()) {
-                em.remove(em.contains(comment) ? comment : em.merge(comment));
-            }
-            Guide.getMakeBy().getGuides().remove(Guide);
-            em.remove(em.contains(Guide) ? Guide : em.merge(Guide));
-            FacesContext.getCurrentInstance().getExternalContext().redirect("view-guides.xhtml");
-        } else {
-            em.merge(Guide);
-        }
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Сообщение!", "Вы отрицательно оценили данный гайд"));
-    }
-
-    @Transactional
     public void save() throws IOException {
         try {
             if(id == null) {
@@ -117,25 +91,36 @@ public class GuideView extends SecurityUtils implements Serializable {
     }
 
     @Transactional
-    public void up(Comment comment) {
-        comment.setRank(comment.getRank() + 1);
+    public void changeRank(Comment comment, Long num) {
+        comment.setRank(comment.getRank() + num);
         comment.getGradeBy().add(userSession.getSystemUser());
         em.merge(comment);
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Сообщение!", "Вы положительно оценили данный комментарий"));
+        if(num > 0) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Сообщение!", "Вы положительно оценили данный комментарий"));
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Сообщение!", "Вы отрицательно оценили данный комментарий"));
+        }
     }
 
     @Transactional
-    public void down(Comment comment) {
-        comment.setRank(comment.getRank() - 1);
-        comment.getGradeBy().add(userSession.getSystemUser());
-        if(comment.getRank() <= -10) {
-            Guide.getComments().remove(comment);
+    public void changeRank(Long num) throws IOException {
+        if(num > 0) {
+            Guide.setRank(Guide.getRank() + 1);
+            Guide.getGradeBy().add(userSession.getSystemUser());
             em.merge(Guide);
-            em.remove(em.contains(comment) ? comment : em.merge(comment));
-        } else {
-            em.merge(comment);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Сообщение!", "Вы положительно оценили данный гайд"));
         }
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Сообщение!", "Вы отрицательно оценили данный комментарий"));
+        else{
+            Guide.setRank(Guide.getRank() - 1);
+            Guide.getGradeBy().add(userSession.getSystemUser());
+            if (Guide.getRank() <= -10) {
+                em.remove(em.contains(Guide) ? Guide : em.merge(Guide));
+                FacesContext.getCurrentInstance().getExternalContext().redirect("view-guides.xhtml");
+            } else {
+                em.merge(Guide);
+            }
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Сообщение!", "Вы отрицательно оценили данный гайд"));
+        }
     }
 
     public boolean gradable(Comment comment) {

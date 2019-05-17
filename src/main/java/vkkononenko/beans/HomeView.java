@@ -5,7 +5,7 @@ import org.primefaces.model.DashboardColumn;
 import org.primefaces.model.DashboardModel;
 import org.primefaces.model.DefaultDashboardColumn;
 import org.primefaces.model.DefaultDashboardModel;
-import vkkononenko.SecurityUtils;
+import vkkononenko.utils.SecurityUtils;
 import vkkononenko.models.*;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;

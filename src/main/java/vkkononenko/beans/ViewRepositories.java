@@ -1,7 +1,6 @@
 package vkkononenko.beans;
 
-import org.hibernate.Hibernate;
-import vkkononenko.SecurityUtils;
+import vkkononenko.utils.SecurityUtils;
 import vkkononenko.UserSession;
 import vkkononenko.models.Repository;
 import vkkononenko.models.SystemUser;

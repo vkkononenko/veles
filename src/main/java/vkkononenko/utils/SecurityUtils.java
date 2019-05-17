@@ -1,4 +1,6 @@
-package vkkononenko;
+package vkkononenko.utils;
+
+import vkkononenko.UserSession;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;

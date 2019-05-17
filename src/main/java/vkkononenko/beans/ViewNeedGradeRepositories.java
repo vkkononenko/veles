@@ -1,6 +1,6 @@
 package vkkononenko.beans;
 
-import vkkononenko.SecurityUtils;
+import vkkononenko.utils.SecurityUtils;
 import vkkononenko.UserSession;
 import vkkononenko.models.Repository;
 

@@ -4,12 +4,11 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
-import vkkononenko.SecurityUtils;
+import vkkononenko.utils.SecurityUtils;
 import vkkononenko.UserSession;
 import vkkononenko.models.Message;
 import vkkononenko.models.SystemUser;
 
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
@@ -21,6 +20,7 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.io.*;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Created by v.kononenko on 05.03.2019.
@@ -100,12 +100,8 @@ public class ProfileView extends SecurityUtils implements Serializable {
     }
 
     public boolean isMyFriend() {
-        for(SystemUser friend : userSession.getSystemUser().getFriends()) {
-            if(friend.getId().equals(systemUser.getId())) {
-                return true;
-            }
-        }
-        return false;
+       return userSession.getSystemUser().getFriends().stream()
+                .filter((SystemUser s) -> s.getId().equals(systemUser.getId())).collect(Collectors.toList()).size() > 0;
     }
 
     @Transactional

@@ -1,12 +1,15 @@
 package vkkononenko.models;
 
-import vkkononenko.models.bases.RankBase;
+import com.sun.faces.util.CollectionsUtils;
+import org.primefaces.util.CollectionUtils;
+import vkkononenko.models.bases.EntityBase;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Repository extends RankBase {
+public class Repository extends EntityBase {
 
     private String name;
 
@@ -18,6 +21,9 @@ public class Repository extends RankBase {
     )
     private List<SystemUser> followers;
 
+    @ManyToOne
+    private SystemUser makeBy;
+
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Version> versions;
 
@@ -25,6 +31,7 @@ public class Repository extends RankBase {
     private List<Grade> grades;
 
     private boolean accepted;
+
 
     public Repository() {
         followers = new ArrayList<>();
@@ -63,6 +70,14 @@ public class Repository extends RankBase {
 
     public void setFollowers(List<SystemUser> followers) {
         this.followers = followers;
+    }
+
+    public SystemUser getMakeBy() {
+        return makeBy;
+    }
+
+    public void setMakeBy(SystemUser makeBy) {
+        this.makeBy = makeBy;
     }
 
     public List<Version> getVersions() {

@@ -1,10 +1,8 @@
 package vkkononenko.beans;
 
 import org.primefaces.event.SelectEvent;
-import vkkononenko.SecurityUtils;
-import vkkononenko.UserSession;
+import vkkononenko.utils.SecurityUtils;
 import vkkononenko.models.Message;
-import vkkononenko.models.SystemUser;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;

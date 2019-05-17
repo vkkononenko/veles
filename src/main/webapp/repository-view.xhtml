@@ -44,7 +44,7 @@
                         </f:facet>
 
                         <p:column style="width:16px">
-                            <p:rowToggler />
+                            <p:rowToggler rendered="#{not empty rec.comments}"/>
                         </p:column>
 
                         <p:column headerText="Версия данных" resizable="true">
@@ -57,8 +57,6 @@
 
                         <p:column headerText="Действия" resizable="true">
                             <p:commandButton value="Просмотр данных на карте" action="#{repositoryView.setVersionForSomething(rec)}" oncomplete="PF('dlg3').show();" update="mainform:tabview"/>
-                            <br/>
-                            <p:commandButton value="Акцептовать" action="#{repositoryView.accept()}" rendered="#{!repositoryView.Updatable()}" update="mainform"/>
                             <br/>
                             <p:commandButton value="Добавить комментарий" action="#{repositoryView.setVersionForSomething(rec)}" oncomplete="PF('dlg4').show();"/>
                         </p:column>
@@ -76,7 +74,9 @@
                                 </f:facet>
 
                                 <p:column headerText="Логин комментатора" resizable="true">
-                                    <h:outputText value="#{comment.makeBy.login}" />
+                                    <p:link value="#{comment.makeBy.login}" outcome="profile-view.xhtml">
+                                        <f:param name="id" value="#{comment.makeBy.id}"/>
+                                    </p:link>
                                 </p:column>
 
                                 <p:column headerText="Ранк комментария" resizable="true">
@@ -88,7 +88,7 @@
                                 </p:column>
 
                                 <p:column headerText="Текст комментария" resizable="true">
-                                    <p:textEditor widgetVar="editor2" value="#{comment.text}" style="margin-bottom:10px; height: auto; width: auto">
+                                    <p:textEditor widgetVar="editor2" value="#{comment.text}" readonly="true" style="margin-bottom:10px; height: auto; width: auto">
                                         <f:facet name="toolbar">
                                             <span class="ql-formats"/>
                                             <span class="ql-formats"/>
@@ -107,22 +107,15 @@
 
                     </p:dataTable>
                 </h:panelGrid>
-                <p:commandButton value="Добавить версию" ajax="true" type="button" onclick="PF('dlg2').show();"/>
+                <p:commandButton value="Акцептовать" action="#{repositoryView.accept()}" rendered="#{!repositoryView.Updatable()}" update="mainform"/>
+                <p:commandButton value="Добавить версию" ajax="true" type="button" onclick="PF('dlg2').show();" rendered="#{repositoryView.Updatable()}"/>
 
                 <p:dialog header="Добавление версии" widgetVar="dlg2" minHeight="40">
                     <h:panelGrid columns="2" cellpadding="10">
-                        <p:outputLabel for="lat" value="Широта центра" style="color: #0d0d0d"/>
-                        <p:inputText id="lat" value="#{repositoryView.lat}"/>
-
-                        <p:outputLabel for="lon" value="Долгота центра" style="color: #0d0d0d"/>
-                        <p:inputText id="lon" value="#{repositoryView.lon}"/>
-
-                        <p:outputLabel for="zoom" value="Зум (целое число)" style="color: #0d0d0d"/>
-                        <p:inputText id="zoom" value="#{repositoryView.zoom}"/>
-
                         <p:outputLabel  value="JSON" for="newData" style="color: #0d0d0d"/>
                         <p:inputTextarea autoResize="false" id="newData" value="#{repositoryView.data}" scrollHeight="200"/>
-                        <p:commandButton value="Добавить версию" ajax="true" action="#{repositoryView.addVersion()}" onclick="PF('dlg2').hide();" rendered="#{repositoryView.Updatable()}" update="mainform"/>
+
+                        <p:commandButton value="Добавить версию" ajax="true" action="#{repositoryView.addVersion()}" onclick="PF('dlg2').hide();" update="mainform"/>
                     </h:panelGrid>
                 </p:dialog>
 
