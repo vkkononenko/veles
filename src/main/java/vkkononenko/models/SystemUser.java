@@ -51,12 +51,11 @@ public class SystemUser extends EntityBase {
     )
     private List<Repository> needGrade;
 
-    public String getStatus() {
-        return status;
-    }
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<MentalProfile> mentalProfiles;
 
-    public void setStatus(String status) {
-        this.status = status;
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
     }
 
     public String getLogin() {
@@ -89,6 +88,14 @@ public class SystemUser extends EntityBase {
 
     public void setOrgName(String orgName) {
         this.orgName = orgName;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public byte[] getAvatar() {
@@ -145,5 +152,13 @@ public class SystemUser extends EntityBase {
 
     public void setNeedGrade(List<Repository> needGrade) {
         this.needGrade = needGrade;
+    }
+
+    public List<MentalProfile> getMentalProfiles() {
+        return mentalProfiles;
+    }
+
+    public void setMentalProfiles(List<MentalProfile> mentalProfiles) {
+        this.mentalProfiles = mentalProfiles;
     }
 }

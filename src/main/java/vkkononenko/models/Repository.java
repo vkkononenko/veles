@@ -32,6 +32,9 @@ public class Repository extends EntityBase {
 
     private boolean accepted;
 
+    public static Boolean compare(Long countFirst, Long countSecond) {
+        return ((countSecond - countFirst) > 0);
+    }
 
     public Repository() {
         followers = new ArrayList<>();

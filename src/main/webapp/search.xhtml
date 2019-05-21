@@ -98,9 +98,7 @@
                     </f:facet>
 
                     <p:column headerText="Ид репозитория" resizable="true">
-                        <p:link value="#{rec.id}" outcome="repository-view.xhtml">
-                            <f:param name="id" value="#{rec.id}"/>
-                        </p:link>
+                        <p:commandButton value="#{rec.id}" action="#{searchView.selectRepository(rec.id)}"/>
                     </p:column>
 
                     <p:column headerText="Логин автора  " resizable="true">
@@ -154,9 +152,7 @@
                     </f:facet>
 
                     <p:column headerText="Ид гайда" resizable="true">
-                        <p:link value="#{rec.id}" outcome="guide-view.xhtml">
-                            <f:param name="id" value="#{rec.id}"/>
-                        </p:link>
+                        <p:commandButton value="#{rec.id}" action="#{searchView.selectGuide(rec.id)}"/>
                     </p:column>
 
                     <p:column headerText="Логин автора  " resizable="true">

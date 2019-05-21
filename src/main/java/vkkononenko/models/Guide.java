@@ -38,4 +38,8 @@ public class Guide extends RankBase implements Comparable<Guide> {
     public int compareTo(Guide o) {
         return (int) (o.rank - this.rank);
     }
+
+    public static Boolean compare(Long countFirst, Long countSecond) {
+        return ((countSecond - countFirst) > 0);
+    }
 }
