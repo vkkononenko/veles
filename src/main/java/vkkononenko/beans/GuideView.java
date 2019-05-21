@@ -41,6 +41,7 @@ public class GuideView extends SecurityUtils implements Serializable {
     public void onLoad() {
         if(id != null) {
             Guide = em.find(Guide.class, id);
+            Guide.setCount(Guide.getCount() + 1);
             Collections.sort(Guide.getComments());
         } else {
             Guide = new Guide();

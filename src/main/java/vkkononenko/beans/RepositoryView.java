@@ -71,8 +71,9 @@ public class RepositoryView extends SecurityUtils implements Serializable {
         systemUserList = q.getResultList();
         if(id != null) {
             repository = em.find(Repository.class, id);
+            repository.setCount(repository.getCount() + 1);
             repository.getVersions().forEach(v -> Collections.sort(v.getComments()));
-            em.refresh(repository);
+            em.merge(repository);
         }
     }
 

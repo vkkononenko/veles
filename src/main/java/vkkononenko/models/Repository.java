@@ -15,6 +15,8 @@ public class Repository extends EntityBase {
 
     private boolean secret;
 
+    private Long count = 1L;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable( joinColumns = @JoinColumn(name = "repository_id"),
             inverseJoinColumns = @JoinColumn(name = "system_user_id")
@@ -67,6 +69,14 @@ public class Repository extends EntityBase {
         this.secret = secret;
     }
 
+    public Long getCount() {
+        return count;
+    }
+
+    public void setCount(Long count) {
+        this.count = count;
+    }
+
     public List<SystemUser> getFollowers() {
         return followers;
     }
@@ -106,5 +116,4 @@ public class Repository extends EntityBase {
     public void setAccepted(boolean accepted) {
         this.accepted = accepted;
     }
-
 }

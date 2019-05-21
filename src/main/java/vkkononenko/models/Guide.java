@@ -11,9 +11,11 @@ import java.util.List;
  */
 @Entity
 public class Guide extends RankBase implements Comparable<Guide> {
+    
+    private String name;
 
-    protected String name;
-
+    private Long count = 1L;
+    
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Comment> comments;
 
@@ -25,6 +27,13 @@ public class Guide extends RankBase implements Comparable<Guide> {
         this.name = name;
     }
 
+    public Long getCount() {
+        return count;
+    }
+
+    public void setCount(Long count) {
+        this.count = count;
+    }
 
     public List<Comment> getComments() {
         return comments;

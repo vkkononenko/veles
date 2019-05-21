@@ -90,20 +90,36 @@ public class SearchView extends SecurityUtils implements Serializable {
             predicate_list.add(cb.like(cb.lower(systemUserJoin.get(SystemUser_.login)), "%" + repositoryFilter.getAuthor().toLowerCase() + "%"));
         }
         predicate_list.add(cb.equal(root.get(Repository_.secret), false));
-        cq.where(predicate_list.toArray(new Predicate[0]));
+        cq.where(predicate_list.toArray(new Predicate[0])).orderBy(cb.desc(root.get(Repository_.count)));
         repositoryList = em.createQuery(cq).getResultList();
-        for(int j = 0; j <  repositoryList.size() - 1; j++) {
-            for (int i = 0; i < repositoryList.size() - 1; i++) {
-                Long first = getSumRec(repositoryList.get(i));
-                Long second = getSumRec(repositoryList.get(i + 1));
+        repositoryList.sort((first, second) -> (int) (getSumRec(second) - getSumRec(first)));
+    }
 
-                if (Repository.compare(first, second)) {
-                    Repository repository = repositoryList.get(i);
-                    repositoryList.set(i, repositoryList.get(i + 1));
-                    repositoryList.set(i + 1, repository);
-                }
+    @Transactional
+    public void searchGuide() {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery cq = cb.createQuery(Guide.class);
+        List<Predicate> predicate_list = new LinkedList<>();
+        Root<Guide> root = cq.from(Guide.class);
+        if(guideFilter.getId() != null) {
+            predicate_list.add(cb.equal(root.get(Guide_.id), guideFilter.getId()));
+        }
+        if(StringUtils.isNotBlank(guideFilter.getName())) {
+            predicate_list.add(cb.like(cb.lower(root.get(Guide_.name)), "%" + guideFilter.getName().toLowerCase() + "%"));
+        }
+        if(StringUtils.isNotBlank(guideFilter.getAuthor())) {
+            Join<Guide, SystemUser> systemUserJoin =  root.join(Guide_.makeBy, JoinType.INNER);;
+            predicate_list.add(cb.like(cb.lower(systemUserJoin.get(SystemUser_.login)), "%" + guideFilter.getAuthor().toLowerCase() + "%"));
+        }
+        if(StringUtils.isNotBlank(guideFilter.getInclude())) {
+            String []keywords = guideFilter.getInclude().split(" ");
+            for(String keyword : keywords) {
+                predicate_list.add(cb.like(cb.lower(root.get(Guide_.text)), "%" + keyword + "%"));
             }
         }
+        cq.where(predicate_list.toArray(new Predicate[0])).orderBy(cb.desc(root.get(Guide_.count)));
+        guideList = em.createQuery(cq).getResultList();
+        guideList.sort((first, second) -> (int) (getSumRec(second) - getSumRec(first)));
     }
 
     @Transactional
@@ -136,57 +152,6 @@ public class SearchView extends SecurityUtils implements Serializable {
         FacesContext.getCurrentInstance().getExternalContext().redirect("repository-view.xhtml?id=".concat(Objects.toString(id)));
     }
 
-
-    public Long getSumRec(Repository repository) {
-        List<MentalProfile> mentalProfiles = userSession.getSystemUser().getMentalProfiles().stream().filter((MentalProfile m) -> m.getRecordId()
-                .equals(repository.getId()) && m.getClazz().equals(Repository.class.getSimpleName())).collect(Collectors.toList());
-        return mentalProfiles.stream().mapToLong(MentalProfile::getCount).sum();
-    }
-
-    public Long getSumRec(Guide guide) {
-        List<MentalProfile> mentalProfiles = userSession.getSystemUser().getMentalProfiles().stream().filter((MentalProfile m) -> m.getRecordId()
-                .equals(guide.getId()) && m.getClazz().equals(Guide.class.getSimpleName())).collect(Collectors.toList());
-        return mentalProfiles.stream().mapToLong(MentalProfile::getCount).sum();
-    }
-
-    @Transactional
-    public void searchGuide() {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery cq = cb.createQuery(Guide.class);
-        List<Predicate> predicate_list = new LinkedList<>();
-        Root<Guide> root = cq.from(Guide.class);
-        if(guideFilter.getId() != null) {
-            predicate_list.add(cb.equal(root.get(Guide_.id), guideFilter.getId()));
-        }
-        if(StringUtils.isNotBlank(guideFilter.getName())) {
-            predicate_list.add(cb.like(cb.lower(root.get(Guide_.name)), "%" + guideFilter.getName().toLowerCase() + "%"));
-        }
-        if(StringUtils.isNotBlank(guideFilter.getAuthor())) {
-            Join<Guide, SystemUser> systemUserJoin =  root.join(Guide_.makeBy, JoinType.INNER);;
-            predicate_list.add(cb.like(cb.lower(systemUserJoin.get(SystemUser_.login)), "%" + guideFilter.getAuthor().toLowerCase() + "%"));
-        }
-        if(StringUtils.isNotBlank(guideFilter.getInclude())) {
-            String []keywords = guideFilter.getInclude().split(" ");
-            for(String keyword : keywords) {
-                predicate_list.add(cb.like(cb.lower(root.get(Guide_.text)), "%" + keyword + "%"));
-            }
-        }
-        cq.where(predicate_list.toArray(new Predicate[0]));
-        guideList = em.createQuery(cq).getResultList();
-        for(int j = 0; j <  guideList.size() - 1; j++) {
-            for (int i = 0; i < guideList.size() - 1; i++) {
-                Long first = getSumRec(guideList.get(i));
-                Long second = getSumRec(guideList.get(i + 1));
-
-                if (Guide.compare(first, second)) {
-                    Guide repository = guideList.get(i);
-                    guideList.set(i, guideList.get(i + 1));
-                    guideList.set(i + 1, repository);
-                }
-            }
-        }
-    }
-
     @Transactional
     public void selectGuide(Long id) throws IOException {
         if(StringUtils.isNotBlank(guideFilter.getName())) {
@@ -214,6 +179,18 @@ public class SearchView extends SecurityUtils implements Serializable {
 
         }
         FacesContext.getCurrentInstance().getExternalContext().redirect("guide-view.xhtml?id=".concat(Objects.toString(id)));
+    }
+
+    public Long getSumRec(Repository repository) {
+        List<MentalProfile> mentalProfiles = userSession.getSystemUser().getMentalProfiles().stream().filter((MentalProfile m) -> m.getRecordId()
+                .equals(repository.getId()) && m.getClazz().equals(Repository.class.getSimpleName())).collect(Collectors.toList());
+        return mentalProfiles.stream().mapToLong(MentalProfile::getCount).sum();
+    }
+
+    public Long getSumRec(Guide guide) {
+        List<MentalProfile> mentalProfiles = userSession.getSystemUser().getMentalProfiles().stream().filter((MentalProfile m) -> m.getRecordId()
+                .equals(guide.getId()) && m.getClazz().equals(Guide.class.getSimpleName())).collect(Collectors.toList());
+        return mentalProfiles.stream().mapToLong(MentalProfile::getCount).sum();
     }
 
     public SystemUserFilter getSystemUserFilter() {
