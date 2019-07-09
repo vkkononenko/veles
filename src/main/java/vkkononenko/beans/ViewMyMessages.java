@@ -38,11 +38,11 @@ public class ViewMyMessages extends SecurityUtils implements Serializable {
     private Message selected;
 
     public void onLoad() {
-        Query input = em.createQuery("SELECT m from Message m  where m.to.id = :inputId ORDER BY m.read DESC, m.dateCreated DESC");
+        Query input = em.createQuery("SELECT m from Message m  where m.to.id = :inputId ORDER BY m.read asc, m.dateCreated desc");
         input.setParameter("inputId", userSession.getSystemUser().getId());
         inputMessages = input.getResultList();
 
-        Query output = em.createQuery("select m from Message m where m.from.id = :outputId order by m.dateCreated DESC");
+        Query output = em.createQuery("select m from Message m where m.from.id = :outputId order by m.dateCreated desc");
         output.setParameter("outputId", userSession.getSystemUser().getId());
         outputMessages = output.getResultList();
     }

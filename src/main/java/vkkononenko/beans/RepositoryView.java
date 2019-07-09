@@ -158,6 +158,7 @@ public class RepositoryView extends SecurityUtils implements Serializable {
                     "http://localhost:8080/veles/repository-view.xhtml?id=").concat(Objects.toString(repository.getId())));
             em.persist(em.merge(message));
         });
+        em.merge(repository);
         FacesContext.getCurrentInstance().getExternalContext().redirect("repository-view.xhtml?id=" + repository.getId());
     }
 
@@ -209,7 +210,7 @@ public class RepositoryView extends SecurityUtils implements Serializable {
         if(comment.getGradeBy() == null) {
             comment.setGradeBy(new ArrayList<SystemUser>());
         }
-        return comment.getGradeBy().stream().filter((SystemUser s) -> s.getId().equals(userSession.getSystemUser().getId())).findFirst().orElse(null) == null;
+        return !comment.getGradeBy().stream().noneMatch((SystemUser s) -> s.getId().equals(userSession.getSystemUser().getId()));
     }
 
     public void setVersionForSomething(Version version) throws IOException {

@@ -54,6 +54,4 @@ public class EntityBase implements Serializable {
     public void setDateUpdated(Date dateUpdated) {
         this.dateUpdated = dateUpdated;
     }
-
-
 }
