@@ -42,12 +42,7 @@ public class HomeView extends SecurityUtils implements Serializable {
     }
 
     public void handleReorder(DashboardReorderEvent event) {
-        FacesMessage message = new FacesMessage();
-        message.setSeverity(FacesMessage.SEVERITY_INFO);
-        message.setSummary("Reordered: " + event.getWidgetId());
-        message.setDetail("Item index: " + event.getItemIndex() + ", Column index: " + event.getColumnIndex() + ", Sender index: " + event.getSenderColumnIndex());
 
-        addMessage(message);
     }
 
     public long getCountMyRepositories() {
