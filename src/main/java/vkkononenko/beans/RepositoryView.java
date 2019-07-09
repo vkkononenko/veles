@@ -66,7 +66,7 @@ public class RepositoryView extends SecurityUtils implements Serializable {
     @Transactional
     public void onLoad() {
         grades = new ArrayList<>();
-        Query q = em.createQuery("select s from SystemUser s where s.id <> :myId");
+        Query q = em.createQuery("select s from SystemUser s where s.id <> :myId and s.id <> 1");
         q.setParameter("myId", userSession.getSystemUser().getId());
         systemUserList = q.getResultList();
         if(id != null) {
